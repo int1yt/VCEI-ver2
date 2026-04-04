@@ -1,0 +1,5 @@
+{
+  "name": "AutoIDS: CAN & Ethernet Intrusion Detection System",
+  "description": "A simulation and dashboard for an automotive Intrusion Detection System combining CAN bus clock skew detection and Ethernet traffic analysis.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,4 @@
+cpp/build/
+cpp/out/
+*.user
+.vs/
