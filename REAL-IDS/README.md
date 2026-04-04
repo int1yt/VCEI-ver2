@@ -2,6 +2,9 @@
 
 可部署的 **C++17** 车载 IDS 核心（CAN 时钟偏移检测 + 以太网环形缓冲关联），并附带 **`real_ids_daemon`**：用 **HTTP + SSE（Server-Sent Events）** 向 IDS 大屏推送与原版 autoids 模拟器兼容的事件形态。
 
+**从零到跑通告警 / ML 桥 / 前端的完整步骤见 [USAGE.md](USAGE.md)。**  
+带 ML 融合时可在 **`REAL-IDS\start_daemon_with_ml_bridge.bat`** 启动 daemon（自动设置 `REAL_IDS_ML_BRIDGE`）。
+
 ## 构建
 
 需要 **CMake 3.16+** 与 **C++17** 编译器（MSVC、GCC、Clang 均可）。
@@ -84,6 +87,47 @@ real_ids_daemon
 
 Linux/macOS 使用 `export REAL_IDS_MODE=production` 等形式。
 
+可选：**与 IntrusionDetectNet + backend-main 监督学习模型融合**时，先启动 Python 桥接（见下），再设置：
+
+```text
+set REAL_IDS_ML_BRIDGE=http://127.0.0.1:5055
+real_ids_daemon
+```
+
+告警 SSE/JSON 的 `payload` 中会多一段 **`ml_fusion`**（详细攻击类型、`attack_chain` 步骤、以太网/CAN 模型输出）。
+
+### ML 融合桥接（`integration/ml_bridge`）
+
+将 **`IntrusionDetectNet-CNN-Transformer-main`**（以太网流量序列二分类：BENIGN/ANOMALY，输入形状 `10×80`）与 **`backend-main/ids/supervised-main`**（CAN 5 类：Normal、DoS、Fuzzy、gear、RPM，SupCon+线性头，输入简化为 `29×29` 矩阵由最近 29 帧 CAN 构造）接到 REAL-IDS 的规则融合之后，输出 **融合攻击类型** 与 **有序攻击链**。
+
+**说明：** `backend-main` 里 Django 的 `ids/views.py` 仅提供读 CSV 演示，**并未挂载 PyTorch**；CAN 推理以 `supervised-main` 的权重为准。IntrusionDetectNet 仓库内若尚无 `transformer_ids_model.pth`，需先在其 `PycharmProjects` 下训练生成；桥接会从默认路径自动查找。
+
+```bash
+cd REAL-IDS/integration/ml_bridge
+pip install -r requirements.txt
+# 可选：指定权重（CAN 需指向含 ckpt_epoch_*.pth 与 ckpt_class_epoch_*.pth 的目录）
+set ETH_MODEL_PATH=C:\path\to\transformer_ids_model.pth
+set CAN_PRETRAINED_PATH=C:\path\to\supcon_save_folder
+set CAN_CKPT=200
+uvicorn server:app --host 0.0.0.0 --port 5055
+```
+
+**桥接 HTTP：** `POST /v1/enrich`，Body 与 daemon 自动发送的字段一致（`real_ids_classification`、`ethernet_context`、`can_history` 等）。返回字段摘要：
+
+| 字段 | 含义 |
+|------|------|
+| `fusion_attack_type` | 跨域/单域的细化结论文案 |
+| `fusion_summary` | 一段可读摘要 |
+| `attack_chain` | `order, stage, detail` 有序步骤（感知→以太 ML→CAN 时序 IDS→CAN ML→规则融合） |
+| `ethernet_ml` | IntrusionDetectNet：`label`, `probability_anomaly` |
+| `can_ml` | 5 类：`class_id`, `class_name`, `confidence`, `class_probs` |
+
+**特征对齐注意：** 当前从 REAL-IDS 仿真包构造的 `10×80` 为 **占位统计**，与 IntrusionDetectNet 原始 CIC 流特征不完全一致；量产时请改为与训练相同的 **StandardScaler + 列定义**，或在请求中自行传入 `flow_sequence_10x80`。
+
+### Web 观测台（推荐）
+
+仓库内 **`web-dashboard/`** 提供 React + Vite 页面：实时 CAN/以太网列表、环形缓冲示意、告警详情、**`ml_fusion` 攻击链与分类**。安装步骤见 **`web-dashboard/README.md`**（配置 `VITE_REAL_IDS_URL` 后 `npm install` / `npm run dev`）。
+
 ## 大屏 / 外部系统接口
 
 所有 JSON 接口均带 **CORS**（`Access-Control-Allow-Origin: *`），便于浏览器大屏跨域访问。
@@ -143,3 +187,7 @@ es.onmessage = (e) => {
 4. 用 `SystemTimeSource` 或自实现 `TimeSource` 对接 gPTP/PHC。
 
 `IdsEngine::set_callbacks` 可把告警送到你的日志、IPC 或再转发给本 daemon 同构的 SSE 层（需自行桥接）。
+
+## 集成测试
+
+正确性 + 延迟采样，统一输出 `summary.json` / `summary.txt`：见 **`tests/integration/README.md`**，运行 `python tests/integration/run_tests.py`（需在 `tests/integration` 安装 `requirements.txt`）。

@@ -10,8 +10,10 @@
 
 #include <atomic>
 #include <chrono>
+#include <cctype>
 #include <cstring>
 #include <cstdlib>
+#include <deque>
 #include <memory>
 #include <mutex>
 #include <random>
@@ -35,6 +37,10 @@ std::atomic<int> g_pending_can{0};
 std::atomic<int> g_pending_eth{0};
 
 std::mt19937 g_rng{std::random_device{}()};
+
+std::deque<CanPacket> g_can_hist;
+std::mutex g_can_hist_mu;
+constexpr std::size_t k_can_hist_cap = 29;
 
 std::string random_hex8() {
   std::uniform_int_distribution<unsigned> dist(0, 0xFFFFFFFFu);
@@ -74,6 +80,60 @@ json alert_json(const Alert& a) {
               {"ethernetContext", std::move(eth_ctx)},
               {"classification", a.classification},
               {"confidence", a.confidence}};
+}
+
+void append_can_history(const CanPacket& p) {
+  std::lock_guard<std::mutex> lk(g_can_hist_mu);
+  g_can_hist.push_back(p);
+  while (g_can_hist.size() > k_can_hist_cap) {
+    g_can_hist.pop_front();
+  }
+}
+
+void try_ml_bridge_enrich(const Alert& a, json& payload) {
+  const char* base = std::getenv("REAL_IDS_ML_BRIDGE");
+  if (!base || !base[0]) return;
+
+  json body;
+  body["real_ids_classification"] = a.classification;
+  body["can_skew_triggered"] = true;
+  body["trigger_can"] = can_json(a.can_packet);
+
+  json eth_arr = json::array();
+  for (const auto& e : a.ethernet_context) {
+    eth_arr.push_back(eth_json(e));
+  }
+  body["ethernet_context"] = std::move(eth_arr);
+
+  json hist = json::array();
+  {
+    std::lock_guard<std::mutex> lk(g_can_hist_mu);
+    for (const auto& c : g_can_hist) {
+      hist.push_back(can_json(c));
+    }
+  }
+  body["can_history"] = std::move(hist);
+
+  httplib::Client cli(base);
+  cli.set_connection_timeout(0, 800000);
+  cli.set_read_timeout(8, 0);
+  auto res = cli.Post("/v1/enrich", body.dump(), "application/json");
+  if (!res) {
+    std::fprintf(stderr, "[REAL-IDS] ml_bridge: POST /v1/enrich failed: %s (REAL_IDS_ML_BRIDGE=%s)\n",
+                 httplib::to_string(res.error()).c_str(), base);
+    std::fprintf(stderr, "[REAL-IDS] Is uvicorn running? Try: curl %s/health\n", base);
+    return;
+  }
+  if (res->status != 200) {
+    std::fprintf(stderr, "[REAL-IDS] ml_bridge: HTTP %d (expected 200). Body: %.200s\n", res->status,
+                 res->body.c_str());
+    return;
+  }
+  try {
+    payload["ml_fusion"] = json::parse(res->body);
+  } catch (...) {
+    std::fprintf(stderr, "[REAL-IDS] ml_bridge: invalid JSON in response\n");
+  }
 }
 
 void publish(const json& j) {
@@ -201,13 +261,16 @@ int main() {
 
   EngineCallbacks cb;
   cb.on_can_packet = [](const CanPacket& p) {
+    append_can_history(p);
     publish(json{{"event", "can-packet"}, {"payload", can_json(p)}});
   };
   cb.on_eth_packet = [](const EthernetPacket& p) {
     publish(json{{"event", "eth-packet"}, {"payload", eth_json(p)}});
   };
   cb.on_alert = [](const Alert& a) {
-    publish(json{{"event", "alert"}, {"payload", alert_json(a)}});
+    json payload = alert_json(a);
+    try_ml_bridge_enrich(a, payload);
+    publish(json{{"event", "alert"}, {"payload", std::move(payload)}});
   };
   engine->set_callbacks(std::move(cb));
   engine->set_alert_cooldown_ticks(100);
@@ -354,6 +417,12 @@ int main() {
 
   const int port = port_from_env();
   std::fprintf(stderr, "real_ids_daemon listening on 0.0.0.0:%d (SSE /api/v1/stream)\n", port);
+  if (const char* bridge = std::getenv("REAL_IDS_ML_BRIDGE"); bridge && bridge[0]) {
+    std::fprintf(stderr, "REAL_IDS_ML_BRIDGE=%s (enrich alerts via POST /v1/enrich)\n", bridge);
+  } else {
+    std::fprintf(stderr, "REAL_IDS_ML_BRIDGE not set — alerts have no ml_fusion. "
+                         "Start ml_bridge then set e.g. http://127.0.0.1:5055 and restart daemon.\n");
+  }
   svr.listen("0.0.0.0", port);
   return 0;
 }

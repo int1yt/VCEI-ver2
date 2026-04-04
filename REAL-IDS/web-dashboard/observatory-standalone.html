@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REAL-IDS Observatory（免构建）</title>
+  <style>
+    :root { --bg:#0f172a; --panel:#1e293b; --border:#334155; --text:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8; --danger:#f87171; --warn:#fbbf24; --ok:#4ade80; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, sans-serif; background:var(--bg); color:var(--text); padding:12px; max-width:1280px; margin-inline:auto; }
+    h1 { font-size:1.25rem; margin:0 0 4px; }
+    .sub { color:var(--muted); font-size:.8rem; margin-bottom:12px; }
+    .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px; }
+    button { padding:6px 12px; border-radius:8px; border:1px solid var(--accent); background:rgba(56,189,248,.12); color:var(--accent); cursor:pointer; font-weight:600; }
+    button.warn { border-color:var(--warn); color:var(--warn); background:rgba(251,191,36,.12); }
+    .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap:12px; }
+    .panel { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:12px; }
+    h2 { margin:0 0 8px; font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
+    .mono { font-family: ui-monospace, monospace; font-size:.75rem; }
+    .stream { max-height:200px; overflow:auto; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:6px; }
+    .line { display:flex; justify-content:space-between; padding:4px; font-size:.72rem; border-radius:4px; margin-bottom:2px; }
+    .line.atk { border-left:3px solid var(--danger); }
+    .line.eth-atk { border-left:3px solid var(--warn); }
+    pre { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:8px; font-size:.7rem; overflow:auto; max-height:200px; }
+    .dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+    .ok { background:var(--ok); } .bad { background:var(--danger); }
+    input.api { flex:1; min-width:200px; padding:6px 8px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); }
+    ol.chain li { margin-bottom:8px; font-size:.82rem; line-height:1.45; }
+    .stage { color:var(--accent); font-size:.65rem; text-transform:uppercase; }
+  </style>
+</head>
+<body>
+  <h1>REAL-IDS Observatory（免 npm / 免构建）</h1>
+  <p class="sub">用静态页 + SSE。请先在本目录启动任意 HTTP 服务（见下方说明），不要用 file:// 直接打开。</p>
+
+  <div class="row">
+    <label class="mono">API 根地址</label>
+    <input class="api" id="apiBase" type="text" value="http://127.0.0.1:8080" />
+    <button type="button" id="btnReconnect">重连 SSE</button>
+    <span class="dot bad" id="led"></span>
+    <span id="sseStat">未连接</span>
+  </div>
+  <div class="row">
+    <button type="button" id="btnStart">启动仿真</button>
+    <button type="button" id="btnStop">停止仿真</button>
+    <button type="button" class="warn" id="btnAtk1">攻击 Ethernet→CAN</button>
+    <button type="button" class="warn" id="btnAtk2">攻击 仅CAN</button>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>数据流</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <div class="mono" style="color:var(--muted);margin-bottom:4px;">CAN</div>
+          <div class="stream" id="canStream"></div>
+        </div>
+        <div>
+          <div class="mono" style="color:var(--muted);margin-bottom:4px;">Ethernet</div>
+          <div class="stream" id="ethStream"></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>告警（点击选中）</h2>
+      <div class="stream" id="alertList" style="max-height:160px;"></div>
+      <div id="detail"></div>
+    </div>
+  </div>
+
+  <script>
+(function () {
+  const params = new URLSearchParams(location.search);
+  const ETH_N = 10, CAN_N = 29;
+  let canBuf = [], ethBuf = [], alerts = [], selected = null, es = null;
+
+  function api() {
+    return document.getElementById('apiBase').value.replace(/\/$/, '');
+  }
+
+  function push(arr, cap, x) {
+    arr.push(x);
+    while (arr.length > cap) arr.shift();
+  }
+
+  function renderStreams() {
+    const c = document.getElementById('canStream');
+    const e = document.getElementById('ethStream');
+    c.innerHTML = canBuf.slice().reverse().slice(0, 12).map(p =>
+      `<div class="line ${p.isAttack?'atk':''}"><span class="mono">${p.id}</span><span class="mono" style="color:var(--muted)">${p.data||''}</span></div>`
+    ).join('') || '<div style="color:var(--muted);font-size:.8rem;">暂无</div>';
+    e.innerHTML = ethBuf.slice().reverse().slice(0, 12).map(p =>
+      `<div class="line ${p.isAttack?'eth-atk':''}"><span>${p.protocol}</span><span class="mono" style="color:var(--muted)">${p.srcIp||''}</span></div>`
+    ).join('') || '<div style="color:var(--muted);font-size:.8rem;">暂无</div>';
+  }
+
+  function renderAlerts() {
+    const el = document.getElementById('alertList');
+    el.innerHTML = alerts.map(a =>
+      `<div class="line" style="cursor:pointer;border:1px solid var(--border);margin-bottom:4px;" data-id="${a.id}">` +
+      `<span style="color:var(--danger)">${escapeHtml(a.classification)}</span></div>`
+    ).join('') || '<div style="color:var(--muted)">暂无告警</div>';
+    el.querySelectorAll('[data-id]').forEach(n => {
+      n.onclick = () => {
+        selected = alerts.find(x => x.id === n.dataset.id);
+        renderDetail();
+      };
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function renderDetail() {
+    const d = document.getElementById('detail');
+    if (!selected) { d.innerHTML = ''; return; }
+    const m = selected.ml_fusion;
+    let chainHtml = '';
+    if (m && m.attack_chain) {
+      chainHtml = '<h2 style="margin-top:12px">攻击链</h2><ol class="chain">' +
+        m.attack_chain.map(s => `<li><div class="stage">${escapeHtml(s.stage)}</div>${escapeHtml(s.detail)}</li>`).join('') + '</ol>';
+    }
+    d.innerHTML =
+      '<h2 style="margin-top:12px">规则融合</h2><pre>' + escapeHtml(JSON.stringify({
+        classification: selected.classification,
+        confidence: selected.confidence,
+        canPacket: selected.canPacket,
+        ethernetContext: selected.ethernetContext
+      }, null, 2)) + '</pre>' +
+      (m ? '<h2>ML 融合</h2><pre>' + escapeHtml(JSON.stringify(m, null, 2)) + '</pre>' : '<p style="color:var(--muted);font-size:.85rem">无 ml_fusion（未配置 REAL_IDS_ML_BRIDGE 或桥未响应）</p>') +
+      chainHtml;
+  }
+
+  function connect() {
+    if (es) { es.close(); es = null; }
+    const u = api() + '/api/v1/stream';
+    try {
+      es = new EventSource(u);
+    } catch (e) {
+      document.getElementById('sseStat').textContent = '创建失败: ' + e;
+      return;
+    }
+    es.onopen = () => {
+      document.getElementById('led').className = 'dot ok';
+      document.getElementById('sseStat').textContent = 'SSE 已连接';
+    };
+    es.onerror = () => {
+      document.getElementById('led').className = 'dot bad';
+      document.getElementById('sseStat').textContent = 'SSE 断开/错误';
+    };
+    es.onmessage = (ev) => {
+      try {
+        const msg = JSON.parse(ev.data);
+        if (msg.event === 'can-packet') { push(canBuf, CAN_N, msg.payload); renderStreams(); }
+        if (msg.event === 'eth-packet') { push(ethBuf, ETH_N, msg.payload); renderStreams(); }
+        if (msg.event === 'alert') {
+          alerts.unshift(msg.payload);
+          alerts = alerts.slice(0, 20);
+          selected = msg.payload;
+          renderAlerts();
+          renderDetail();
+        }
+      } catch (_) {}
+    };
+  }
+
+  async function post(path, body) {
+    await fetch(api() + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: body ? JSON.stringify(body) : undefined
+    });
+  }
+
+  document.getElementById('btnReconnect').onclick = connect;
+  document.getElementById('btnStart').onclick = () => post('/api/v1/simulation/start');
+  document.getElementById('btnStop').onclick = () => post('/api/v1/simulation/stop');
+  document.getElementById('btnAtk1').onclick = () => post('/api/v1/simulation/attack', { type: 'ethernet-can' });
+  document.getElementById('btnAtk2').onclick = () => post('/api/v1/simulation/attack', { type: 'can-internal' });
+
+  if (params.get('api')) document.getElementById('apiBase').value = params.get('api');
+  connect();
+})();
+  </script>
+
+  <div class="panel" style="margin-top:16px;">
+    <h2>如何在本机打开本页</h2>
+    <p style="font-size:.85rem;line-height:1.5;color:var(--muted);margin:0;">
+      1）在项目目录打开终端，执行：<span class="mono">python -m http.server 5173</span><br />
+      2）浏览器访问：<span class="mono">http://127.0.0.1:5173/observatory-standalone.html</span><br />
+      若 daemon 不在 8080，使用：<span class="mono">?api=http://127.0.0.1:9000</span> 或改上方输入框后点「重连 SSE」。
+    </p>
+  </div>
+</body>
+</html>
