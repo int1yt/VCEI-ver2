@@ -1,9 +1,35 @@
 # REAL-IDS
 
+**上级工作区（整个 `VCEI` 文件夹）总说明：** 见 **`../README.md`**；各子项目代码职责见 **`../CODE_GUIDE.md`**（与本文互补，不限于 REAL-IDS）。
+
+---
+
 可部署的 **C++17** 车载 IDS 核心（CAN 时钟偏移检测 + 以太网环形缓冲关联），并附带 **`real_ids_daemon`**：用 **HTTP + SSE（Server-Sent Events）** 向 IDS 大屏推送与原版 autoids 模拟器兼容的事件形态。
 
 **从零到跑通告警 / ML 桥 / 前端的完整步骤见 [USAGE.md](USAGE.md)。**  
 带 ML 融合时可在 **`REAL-IDS\start_daemon_with_ml_bridge.bat`** 启动 daemon（自动设置 `REAL_IDS_ML_BRIDGE`）。
+
+## 仓库结构
+
+| 路径 | 内容 |
+|------|------|
+| **`cpp/`** | C++17 静态库 **`real_ids`**（CAN 时钟倾斜 IDS + 以太环形缓冲 + 融合）与 **`real_ids_daemon`**（HTTP/SSE + 仿真流量） |
+| **`integration/ml_bridge/`** | FastAPI：IntrusionDetectNet / CarHack CNN / SupCon，输出 `ml_fusion` |
+| **`web-dashboard/`** | Vite + React 观测台（及 `observatory-standalone.html`） |
+| **`tests/integration/`** | Python 集成测试与离线准确率/时钟倾斜微基准 |
+| **`docs/`** | **[代码结构说明（逐文件）](docs/CODE_STRUCTURE.md)** 与 [文档索引](docs/README.md) |
+
+```
+REAL-IDS/
+├── cpp/                      # CMake、include/real_ids、src、daemon、third_party
+├── integration/ml_bridge/
+├── web-dashboard/
+├── tests/integration/
+├── docs/                     # CODE_STRUCTURE.md = 各文件职责与模块关系
+├── README.md                 # 本文件
+├── USAGE.md
+└── start_daemon_with_ml_bridge.bat
+```
 
 ## 构建
 

@@ -73,3 +73,49 @@ def can_packets_to_matrix_29x29(packets: List[Dict[str, Any]]) -> np.ndarray:
         except ValueError:
             pass
     return mat
+
+
+def _parse_data8_hex(data_hex: str) -> List[int]:
+    s = str(data_hex).replace(" ", "")[:16]
+    out = [0] * 8
+    for b in range(8):
+        chunk = s[b * 2 : b * 2 + 2]
+        if len(chunk) < 2:
+            break
+        try:
+            out[b] = int(chunk, 16) & 0xFF
+        except ValueError:
+            out[b] = 0
+    return out
+
+
+def can_packets_to_matrix_64x9(
+    packets: List[Dict[str, Any]],
+    dt_max_ms: float,
+) -> np.ndarray:
+    """
+    Last 64 CAN dicts {id, data, timestamp} -> (64, 9): bytes/255 + Δt(ms)/dt_max_ms clipped [0,1].
+    Timestamps are expected in milliseconds (REAL-IDS daemon).
+    """
+    mat = np.zeros((64, 9), dtype=np.float32)
+    if not packets:
+        return mat
+    seq = list(packets[-64:])
+    while len(seq) < 64:
+        seq.insert(0, seq[0] if seq else {"id": "0", "data": "00" * 8, "timestamp": 0})
+    seq = seq[-64:]
+    dtm = float(dt_max_ms) + 1e-6
+    for i, p in enumerate(seq):
+        data8 = _parse_data8_hex(str(p.get("data", "")))
+        mat[i, :8] = np.array(data8, dtype=np.float32) / 255.0
+        if i == 0:
+            dt = 0.0
+        else:
+            try:
+                dt = float(p.get("timestamp", 0) or 0) - float(seq[i - 1].get("timestamp", 0) or 0)
+            except (TypeError, ValueError):
+                dt = 0.0
+            if dt < 0:
+                dt = 0.0
+        mat[i, 8] = min(1.0, max(0.0, dt / dtm))
+    return mat

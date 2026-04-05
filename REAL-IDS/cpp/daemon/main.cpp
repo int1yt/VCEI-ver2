@@ -40,7 +40,7 @@ std::mt19937 g_rng{std::random_device{}()};
 
 std::deque<CanPacket> g_can_hist;
 std::mutex g_can_hist_mu;
-constexpr std::size_t k_can_hist_cap = 29;
+constexpr std::size_t k_can_hist_cap = 64;
 
 std::string random_hex8() {
   std::uniform_int_distribution<unsigned> dist(0, 0xFFFFFFFFu);

@@ -1,0 +1,41 @@
+{
+  "test_accuracy": 0.8055258553654744,
+  "test_precision_macro": 0.8123998841641118,
+  "test_recall_macro": 0.8332587058396086,
+  "test_f1_macro": 0.8191470887602569,
+  "confusion_matrix": [
+    [
+      4634,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      12307,
+      4231,
+      645
+    ],
+    [
+      0,
+      3194,
+      14216,
+      585
+    ],
+    [
+      0,
+      3942,
+      3408,
+      35141
+    ]
+  ],
+  "class_names": [
+    "Normal",
+    "DoS",
+    "Fuzzy",
+    "Spoofing"
+  ],
+  "classification_report_text": "              precision    recall  f1-score   support\n\n      Normal       1.00      1.00      1.00      4635\n         DoS       0.63      0.72      0.67     17183\n       Fuzzy       0.65      0.79      0.71     17995\n    Spoofing       0.97      0.83      0.89     42491\n\n    accuracy                           0.81     82304\n   macro avg       0.81      0.83      0.82     82304\nweighted avg       0.83      0.81      0.81     82304\n",
+  "best_val_loss": 0.0,
+  "eval_only": true
+}

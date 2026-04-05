@@ -1,0 +1,15 @@
+{
+  "dt_max_ms": 7744935.000001,
+  "class_names": [
+    "Normal",
+    "DoS",
+    "Fuzzy",
+    "Spoofing"
+  ],
+  "window_size": 64,
+  "stride": 32,
+  "n_train": 384084,
+  "n_val": 82304,
+  "n_test": 82304,
+  "data_root": "C:\\Users\\Luyutong\\Desktop\\VCEI\\CarHackData"
+}

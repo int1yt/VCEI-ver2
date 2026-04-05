@@ -56,7 +56,9 @@ def build_attack_chain(
         conf = can_ml.get("confidence")
         cs = f"{conf:.4f}" if isinstance(conf, (int, float)) else str(conf)
         csrc = can_ml.get("source", "")
-        if csrc == "carhack_cnn":
+        if csrc == "can_cnn64":
+            can_title = "CAN 64×9 CNN (sliding window)"
+        elif csrc == "carhack_cnn":
             can_title = "CarHackData CNN"
         elif csrc == "supcon_transfer":
             can_title = "backend supervised (SupCon+linear)"

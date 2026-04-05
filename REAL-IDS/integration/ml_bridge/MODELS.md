@@ -20,9 +20,26 @@ set ETH_MODEL_PATH=C:\完整路径\transformer_ids_model.pth
 
 ---
 
-## 2. CAN 5 类（优先：CarHackData CNN）
+## 2a. CAN 4 类（优先：64×9 滑动窗口 CNN）
 
-桥会**先**尝试加载 **`integration/ml_bridge/models/carhack_can_clf.pth`**（可用环境变量 **`CARHACK_MODEL_PATH`** 覆盖）。若该文件存在且加载成功，CAN 分类使用 **CarHackData** 上训练的 CNN，**不再**走下面的 SupCon。
+若存在 **`REAL-IDS/integration/can_cnn_64x9/artifacts/best_model.pth`**（或 **`CAN_CNN64_MODEL_PATH`** 指向的权重），且同目录下有 **`preprocess_meta.json`**（`train.py` 会自动复制），桥会优先使用该模型。输入为最近 **64** 帧 CAN：`Data0–7` 归一化 + 与前帧间隔 **Δt（ms）**/ `dt_max_ms`，形状 **`(64, 9)`**。`/health` 中 **`can_cnn64_loaded: true`**，**`can_backend`** 为 **`can_cnn64`**。
+
+可选环境变量：
+
+```text
+set CAN_CNN64_MODEL_PATH=C:\完整路径\best_model.pth
+set CAN_CNN64_META_PATH=C:\完整路径\preprocess_meta.json
+```
+
+Daemon 侧需保留 **≥64** 条 CAN 历史（`k_can_hist_cap`）。
+
+训练流程见 **`integration/can_cnn_64x9/README.md`**。
+
+---
+
+## 2. CAN 5 类（其次：CarHackData CNN）
+
+若 **未** 加载 64×9 权重，桥会尝试 **`integration/ml_bridge/models/carhack_can_clf.pth`**（可用 **`CARHACK_MODEL_PATH`** 覆盖）。加载成功则使用 CarHack CNN，**不再**走下面的 SupCon。
 
 **训练（在 `integration/ml_bridge` 下，已激活 venv）：**
 
@@ -66,7 +83,7 @@ set CAN_CKPT=200
 http://127.0.0.1:5055/health
 ```
 
-应看到 **`eth_model_loaded`** 按需为 `true`；CAN 若走 CarHack：**`carhack_can_loaded: true`**；若走 SupCon：**`can_model_loaded: true`**（`/health` 里 **`can_backend`** 会标明当前后端）。
+应看到 **`eth_model_loaded`** 按需为 `true`；CAN：**`can_backend`** 为 **`can_cnn64`** / **`carhack_cnn`** / **`supcon_or_stub`**，并对应 **`can_cnn64_loaded`**、**`carhack_can_loaded`**、**`can_model_loaded`**。
 
 ---
 
