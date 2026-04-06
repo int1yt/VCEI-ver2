@@ -1,2 +1,4 @@
 CarHackData/** filter=lfs diff=lfs merge=lfs -text
 MachineLearningCVE/** filter=lfs diff=lfs merge=lfs -text
+REAL-IDS/integration/can_cnn_64x9/processed/** filter=lfs diff=lfs merge=lfs -text
+REAL-IDS/integration/cross_domain_chain/artifacts/chain_dataset.pt filter=lfs diff=lfs merge=lfs -text

@@ -1,0 +1,33 @@
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\begin{document}
+\begin{tikzpicture}[
+  font=\small,
+  >=Latex,
+  metric/.style={draw=#1!70!black, fill=#1!10, rounded corners=2mm, minimum width=40mm, minimum height=12mm, align=left, very thick},
+  arr/.style={->, very thick, draw=black!75}
+]
+\node[metric=green] (m1) at (0,2.6) {\textbf{低时延主路径}\\CAN 检测 + O(1) 写入};
+\node[metric=blue] (m2) at (0,0.6) {\textbf{固定内存预算}\\环形结构避免动态扩容};
+\node[metric=teal] (m3) at (0,-1.4) {\textbf{按需检索}\\仅告警触发时间窗扫描};
+\node[metric=purple] (m4) at (0,-3.4) {\textbf{部署友好}\\轻量 64x9 CNN 在线推理};
+
+\node[draw=orange!75!black, fill=orange!12, rounded corners=3mm, minimum width=48mm, minimum height=58mm, align=center, very thick] (sum) at (7.2,-0.4) {
+\Large\textbf{效率结论}\\[2mm]
+实时性可满足\\
+车内在线检测\\[2mm]
+\normalsize
+Low Latency\\
+Fixed Memory\\
+Practical Deployment
+};
+
+\draw[arr] (m1.east) -- (sum.west);
+\draw[arr] (m2.east) -- (sum.west);
+\draw[arr] (m3.east) -- (sum.west);
+\draw[arr] (m4.east) -- (sum.west);
+
+\end{tikzpicture}
+\end{document}

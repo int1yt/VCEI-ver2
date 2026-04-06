@@ -1,0 +1,7 @@
+{
+  "epochs": 25,
+  "n_samples": 384084,
+  "latent_dim": 128,
+  "lambda_mmd": 0.5,
+  "final_loss": 4.387581300926081
+}

@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
 
 const ETH_RING = 10;
-const CAN_RING = 29;
+/** Ring UI width; daemon keeps up to 128 CAN frames for ML sliding windows */
+const CAN_RING = 64;
 
 function baseUrl(): string {
   const u = import.meta.env.VITE_REAL_IDS_URL || '';
@@ -49,6 +50,8 @@ interface MlFusion {
   };
   can_class_names?: string[];
   eth_model_note?: string;
+  /** Cross-domain attack-chain Transformer (T=10), when CHAIN_* weights loaded */
+  attack_chain_ml?: Record<string, unknown>;
 }
 
 interface AlertPayload {

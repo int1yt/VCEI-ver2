@@ -75,6 +75,29 @@ set CAN_CKPT=200
 
 ---
 
+## 2c. 攻击链 Transformer（跨域对齐 + GraphTransformerIDS，可选）
+
+若存在：
+
+- `REAL-IDS/integration/cross_domain_chain/artifacts/aligner_encoders.pt`
+- `REAL-IDS/integration/cross_domain_chain/artifacts/graph_transformer_ids.pt`
+
+则 **`POST /v1/enrich`** 会在 **`attack_chain_ml`** 中返回跨域时序攻击链预测（**`fusion_attack_type`** 与 **`attack_chain`** 步骤中也会体现）。训练流程见 `integration/cross_domain_chain/README.md`。
+
+可选环境变量：
+
+```text
+set CHAIN_ALIGNER_PATH=C:\完整路径\aligner_encoders.pt
+set CHAIN_GRAPH_PATH=C:\完整路径\graph_transformer_ids.pt
+set CHAIN_DT_MAX_MS=1000000
+```
+
+Daemon 会保留最多 **128** 条 CAN 历史，以便构造 **10 个** 不同的 64 帧窗口；若不足约 73 帧，链模型仍运行但时间分辨率会退化（见返回字段 **`can_sliding_windows_used`**）。
+
+`/health` 中 **`attack_chain_loaded`** 为 `true` 表示两权重已成功加载。
+
+---
+
 ## 3. 自检
 
 浏览器或 curl：
@@ -83,7 +106,7 @@ set CAN_CKPT=200
 http://127.0.0.1:5055/health
 ```
 
-应看到 **`eth_model_loaded`** 按需为 `true`；CAN：**`can_backend`** 为 **`can_cnn64`** / **`carhack_cnn`** / **`supcon_or_stub`**，并对应 **`can_cnn64_loaded`**、**`carhack_can_loaded`**、**`can_model_loaded`**。
+应看到 **`eth_model_loaded`** 按需为 `true`；CAN：**`can_backend`** 为 **`can_cnn64`** / **`carhack_cnn`** / **`supcon_or_stub`**，并对应 **`can_cnn64_loaded`**、**`carhack_can_loaded`**、**`can_model_loaded`**；若已部署攻击链权重，**`attack_chain_loaded`** 为 **`true`**。
 
 ---
 

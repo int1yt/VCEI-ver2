@@ -14,6 +14,7 @@ def build_attack_chain(
     eth_ml: Optional[Dict[str, Any]],
     can_ml: Optional[Dict[str, Any]],
     fusion_summary: str,
+    attack_chain_ml: Optional[Dict[str, Any]] = None,
 ) -> List[Dict[str, Any]]:
     """Ordered steps for dashboard / SIEM. Each step has time_order, stage, detail."""
     steps: List[Dict[str, Any]] = []
@@ -73,6 +74,16 @@ def build_attack_chain(
     else:
         add("can_ml", "CAN classifier: not run (no checkpoint or tensor build failed).")
 
+    if attack_chain_ml and attack_chain_ml.get("source") == "graph_transformer_ids":
+        cn = attack_chain_ml.get("chain_name", "?")
+        probs = attack_chain_ml.get("chain_probs") or {}
+        top = max(probs.items(), key=lambda kv: kv[1])[0] if probs else cn
+        slide = attack_chain_ml.get("can_sliding_windows_used", False)
+        add(
+            "attack_chain_transformer",
+            f"Cross-domain sequence (T=10): predicted chain '{cn}' (top={top}). "
+            f"CAN sliding 64-frame windows: {'yes' if slide else 'padded/fallback — send ≥73 CAN frames for full temporal resolution'}.",
+        )
     add("rule_fusion", f"REAL-IDS CentralProcessor: {real_ids_classification}")
     add("correlation_summary", fusion_summary)
     return steps

@@ -1,0 +1,37 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\small,
+  >=Latex,
+  blk/.style={draw=#1!70!black, fill=#1!10, rounded corners=2.2mm, very thick, minimum width=32mm, minimum height=10mm, align=center},
+  sig/.style={->, very thick},
+  box/.style={draw=black!25, rounded corners=3mm, line width=0.8pt}
+]
+
+\node[blk=blue] (daemon) at (0,0) {real\_ids\_daemon\\64 帧 CAN 历史};
+\node[blk=teal] (feat) at (4.6,0) {特征构造\\64x9 + \(\Delta t\) 归一化};
+\node[blk=orange] (cnn) at (9.2,0) {CAN\_CNN64 推理\\best\_model.pth};
+\node[blk=purple] (res) at (13.8,0) {can\_ml 输出\\class/confidence/probs};
+\node[blk=green!70!black] (fusion) at (18.4,0) {融合告警\\attack type};
+
+\draw[sig] (daemon) -- (feat);
+\draw[sig] (feat) -- (cnn);
+\draw[sig] (cnn) -- (res);
+\draw[sig] (res) -- (fusion);
+
+\node[draw=black!35, rounded corners=2mm, fill=yellow!12, align=left, inner sep=4pt] at (9.2,-1.7) {
+一致性要求：\\
+`preprocess\_meta.json` 中 `dt\_max\_ms`\\
+需与训练阶段保持一致
+};
+
+\begin{scope}[on background layer]
+  \node[box, fit=(daemon)(feat)(cnn)(res)(fusion), inner sep=7mm, label={[yshift=2mm]\large\bfseries 在线推理与系统集成}] {};
+\end{scope}
+
+\end{tikzpicture}
+\end{document}

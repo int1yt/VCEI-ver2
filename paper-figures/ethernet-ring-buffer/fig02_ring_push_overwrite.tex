@@ -1,0 +1,36 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\small,
+  >=Latex,
+  cell/.style={draw=black!60, minimum width=10mm, minimum height=9mm, align=center},
+  ptr/.style={->, very thick, draw=black!80}
+]
+
+% ring cells
+\foreach \i in {0,...,9} {
+  \node[cell, fill=blue!6] (c\i) at (\i*1.05, 0) {\i};
+}
+
+\node[align=left] at (4.7, 1.2) {\textbf{容量} \(C=10\)\\\textbf{状态} \(count=C\)（已满）};
+
+% pointers
+\draw[ptr, red!80] (c7.north) -- ++(0,1) node[above] {\texttt{head}（下一写入）};
+\draw[ptr, orange!90!black] (c8.south) -- ++(0,-1) node[below] {\texttt{tail}（最旧数据）};
+
+% overwrite explanation
+\node[draw=black!40, rounded corners=2mm, fill=green!8, align=left, inner sep=5pt] (rule) at (4.7,-2.0) {
+写入规则：\\
+\(buffer[head]\leftarrow e_{new}\), \(\ head=(head+1)\bmod C\)\\
+若已满：\(\ tail=(tail+1)\bmod C\)（覆盖最旧元素）
+};
+
+\draw[->, very thick] (c7) -- ++(0,-0.9) node[midway,right] {写入 \(e_{new}\)};
+\draw[->, very thick, dashed] (rule.north) -- (c7.south);
+
+\end{tikzpicture}
+\end{document}

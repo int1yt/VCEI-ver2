@@ -1,0 +1,36 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\small,
+  >=Latex,
+  bar/.style={draw=black!70, rounded corners=1.5mm, minimum height=8mm, align=center},
+  ax/.style={very thick, -Latex}
+]
+
+% axis
+\draw[ax] (0,0) -- (12.2,0) node[right] {相对开销 / 时延};
+\draw[ax] (0,0) -- (0,4.2) node[above] {操作类型};
+
+% bars
+\node[anchor=east] at (-0.2,3.2) {写入 \texttt{push}};
+\node[bar, fill=green!25, minimum width=2.2cm, anchor=west] at (0.2,3.2) {\(O(1)\)};
+
+\node[anchor=east] at (-0.2,2.0) {告警触发检索};
+\node[bar, fill=orange!25, minimum width=5.4cm, anchor=west] at (0.2,2.0) {最坏 \(O(C)\)};
+
+\node[anchor=east] at (-0.2,0.8) {常规无告警周期};
+\node[bar, fill=blue!25, minimum width=2.8cm, anchor=west] at (0.2,0.8) {仅写入路径};
+
+\node[draw=black!35, rounded corners=2mm, fill=teal!10, align=left, inner sep=5pt] at (8.3,3.3) {
+实时性结论：\\
+1) 主路径由 \(O(1)\) 写入主导；\\
+2) 检索开销按告警触发；\\
+3) 固定容量保证内存上限可控。
+};
+
+\end{tikzpicture}
+\end{document}

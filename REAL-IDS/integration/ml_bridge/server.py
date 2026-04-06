@@ -12,10 +12,14 @@ Env:
   CAN_CNN64_META_PATH  optional preprocess_meta.json (default: same directory as CAN_CNN64_MODEL_PATH)
   CAN_PRETRAINED_PATH  directory with ckpt_epoch_*.pth and ckpt_class_epoch_*.pth (used only if 64×9 and CarHack models missing)
   CAN_CKPT         checkpoint epoch number (default 200)
+  CHAIN_ALIGNER_PATH   cross_domain_chain aligner_encoders.pt (optional; enables attack-chain Transformer in /v1/enrich)
+  CHAIN_GRAPH_PATH     cross_domain_chain graph_transformer_ids.pt
+  CHAIN_DT_MAX_MS      optional CAN Δt scale if no CAN_CNN64 meta (default 1e6)
 """
 from __future__ import annotations
 
 import os
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import numpy as np
@@ -32,6 +36,7 @@ from eth_intrusion_net import EthIntrusionNet
 from can_supcon_infer import CanSupconInfer
 from carhack_infer import CarHackCanInfer
 from can_cnn64_infer import CanCnn64Infer
+from chain_infer import AttackChainInfer, get_attack_chain_infer, load_dt_max_from_meta
 from features import can_packets_to_matrix_29x29, can_packets_to_matrix_64x9, eth_packets_to_sequence_10x80
 
 app = FastAPI(title="REAL-IDS ML Bridge", version="1.0.0")
@@ -46,6 +51,7 @@ _eth: Optional[EthIntrusionNet] = None
 _can: Optional[CanSupconInfer] = None
 _carhack: Optional[CarHackCanInfer] = None
 _cnn64: Optional[CanCnn64Infer] = None
+_chain: Optional[AttackChainInfer] = None
 
 
 def _packet_attackish(p: Dict[str, Any]) -> bool:
@@ -143,6 +149,34 @@ def _default_can_cnn64_weights() -> str:
     )
 
 
+def get_chain_infer() -> AttackChainInfer:
+    global _chain
+    if _chain is None:
+        _chain = get_attack_chain_infer()
+    return _chain
+
+
+def _resolve_chain_dt_max_ms() -> float:
+    c64 = get_can_cnn64()
+    if c64.model is not None:
+        return float(c64.dt_max_ms)
+    mp = os.environ.get("CAN_CNN64_META_PATH", "").strip()
+    if mp:
+        v = load_dt_max_from_meta(Path(mp))
+        if v and v > 0:
+            return v
+    meta_default = (
+        Path(__file__).resolve().parent.parent
+        / "can_cnn_64x9"
+        / "artifacts"
+        / "preprocess_meta.json"
+    )
+    v = load_dt_max_from_meta(meta_default)
+    if v and v > 0:
+        return v
+    return float(os.environ.get("CHAIN_DT_MAX_MS", "1000000"))
+
+
 class EnrichRequest(BaseModel):
     real_ids_classification: str = ""
     can_skew_triggered: bool = True
@@ -200,7 +234,16 @@ def health() -> Dict[str, Any]:
         "eth_weights_file_exists": os.path.isfile(eth_path),
         "can_pretrained_path": os.environ.get("CAN_PRETRAINED_PATH", ""),
         "can_ckpt": int(os.environ.get("CAN_CKPT", "200")),
-        "hint": "CAN: 64×9 CNN if can_cnn64_loaded else CarHack else SupCon. Daemon should send ≥64 CAN frames in can_history.",
+        "attack_chain_loaded": get_chain_infer().ok,
+        "attack_chain_aligner": os.environ.get("CHAIN_ALIGNER_PATH", "")
+        or os.path.normpath(
+            os.path.join(os.path.dirname(__file__), "..", "cross_domain_chain", "artifacts", "aligner_encoders.pt")
+        ),
+        "attack_chain_graph": os.environ.get("CHAIN_GRAPH_PATH", "")
+        or os.path.normpath(
+            os.path.join(os.path.dirname(__file__), "..", "cross_domain_chain", "artifacts", "graph_transformer_ids.pt")
+        ),
+        "hint": "CAN: 64×9 CNN if can_cnn64_loaded else CarHack else SupCon. Attack-chain ML: attack_chain_loaded; daemon sends up to 128 CAN frames.",
     }
 
 
@@ -286,6 +329,17 @@ def enrich(body: EnrichRequest) -> Dict[str, Any]:
     else:
         detailed = f"Alert per REAL-IDS rules: {fusion_type}"
 
+    attack_chain_ml: Optional[Dict[str, Any]] = None
+    ch_inf = get_chain_infer()
+    if ch_inf.ok and (can_hist or eth_ctx):
+        try:
+            attack_chain_ml = ch_inf.predict(can_hist, eth_ctx, _resolve_chain_dt_max_ms())
+            if attack_chain_ml.get("source") == "graph_transformer_ids":
+                cn = attack_chain_ml.get("chain_name", "")
+                detailed = f"{detailed} | Attack-chain ML: scenario={cn}"
+        except Exception as e:
+            attack_chain_ml = {"source": "error", "note": str(e)}
+
     summary = fusion_summary_text(
         real_ids_classification=body.real_ids_classification,
         eth_anomaly=eth_anomaly,
@@ -300,6 +354,7 @@ def enrich(body: EnrichRequest) -> Dict[str, Any]:
         eth_ml=eth_ml,
         can_ml=can_ml,
         fusion_summary=summary,
+        attack_chain_ml=attack_chain_ml,
     )
 
     resp_can_names = CAN_CLASS_NAMES
@@ -310,6 +365,7 @@ def enrich(body: EnrichRequest) -> Dict[str, Any]:
         "fusion_attack_type": detailed,
         "fusion_summary": summary,
         "attack_chain": chain,
+        "attack_chain_ml": attack_chain_ml,
         "ethernet_ml": eth_ml,
         "can_ml": can_ml,
         "can_class_names": resp_can_names,

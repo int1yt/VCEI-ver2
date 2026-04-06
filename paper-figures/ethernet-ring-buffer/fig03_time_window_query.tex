@@ -1,0 +1,47 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\small,
+  >=Latex,
+  pkt/.style={circle, draw=black!70, fill=blue!10, minimum size=5mm, inner sep=0pt},
+  inwin/.style={circle, draw=black!70, fill=orange!35, minimum size=5mm, inner sep=0pt}
+]
+
+\draw[very thick, -Latex] (0,0) -- (14,0) node[right] {时间 \(t\)};
+\node[below] at (0,0) {\(t_0\)};
+\node[below] at (13.2,0) {\(t_n\)};
+
+% alert and window
+\draw[dashed, thick] (8.0,-1.2) -- (8.0,1.2);
+\node[above] at (8.0,1.2) {CAN 异常时刻 \(t_a\)};
+\draw[thick, color=red!80] (5.8,0.55) -- (10.2,0.55);
+\node[above, color=red!80] at (8.0,0.55) {\(\mathcal{W}(t_a)=[t_a-\Delta_{pre},t_a+\Delta_{post}]\)};
+
+% packets
+\node[pkt] (p1) at (1.2,0) {};
+\node[pkt] (p2) at (2.0,0) {};
+\node[pkt] (p3) at (3.5,0) {};
+\node[inwin] (p4) at (6.1,0) {};
+\node[inwin] (p5) at (6.8,0) {};
+\node[inwin] (p6) at (7.6,0) {};
+\node[inwin] (p7) at (8.7,0) {};
+\node[inwin] (p8) at (9.8,0) {};
+\node[pkt] (p9) at (11.6,0) {};
+\node[pkt] (p10) at (12.6,0) {};
+
+\node[align=left, draw=black!35, rounded corners=2mm, fill=green!8, inner sep=5pt] at (7.0,-1.9) {
+检索条件（闭区间）：\\
+\(t_i \ge t_{start}\ \land\ t_i \le t_{end}\)
+};
+
+\node[align=left] at (12.0,1.5) {
+\textcolor{orange!80!black}{橙色点：被检索返回}\\
+蓝色点：时间窗外报文
+};
+
+\end{tikzpicture}
+\end{document}

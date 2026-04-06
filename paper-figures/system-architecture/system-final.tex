@@ -1,0 +1,74 @@
+\documentclass[tikz,border=20pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, fit, backgrounds, calc}
+
+\begin{document}
+\begin{figure}[htbp]
+	\centering % 核心：确保水平居中
+	% 核心：resizebox 确保图像宽度正好等于正文宽度 (\textwidth)
+	% 如果觉得太满，可以改为 0.9\textwidth
+	\resizebox{\textwidth}{!}{ 
+		\begin{tikzpicture}[
+			font=\small\sffamily,
+			>=Stealth,
+			box/.style={
+				rectangle, draw=black!80, fill=white, very thick, 
+				minimum width=42mm, minimum height=12mm, rounded corners=2pt, align=center
+			},
+			highlight/.style={box, draw=blue!70!black, fill=blue!5},
+			route/.style={->, thick, draw=black!70},
+			sync/.style={->, dashed, thick, draw=black!40}
+			]
+			
+			% --- 1. 核心布局 (垂直中轴严格对齐) ---
+			\node[box] (gptp) at (0, 4.5) {gPTP 时间同步\\Global Time Base};
+			\node[highlight] (cpu) at (0, 0) {中央处理器\\Central Processor};
+			\node[box] (ring) at (0, -4) {环形存储\\Ring Buffer};
+			
+			% 左右对称
+			\node[box] (can) at (-5.8, 1.5) {CAN 总线\\CAN Frame Stream};
+			\node[box] (eth) at (-5.8, -1.5) {以太网监控\\Ethernet Traffic Monitor};
+			\node[box] (ids) at (5.8, 0) {CAN ClockIDS\\实时检测引擎};
+			
+			% --- 2. 背景装饰 ---
+			\begin{scope}[on background layer]
+				\node[fill=gray!5, rounded corners=8pt, fit=(gptp)(can)(eth)(cpu)(ids)(ring), inner sep=10mm] (bg) {};
+			\end{scope}
+			
+			% --- 3. 信号连线 (简约化处理) ---
+			
+			% 输入流：折线接入，避免交叉
+			\draw[route] (can.east) -| ([xshift=-8mm, yshift=2mm]cpu.west) -- ([yshift=2mm]cpu.west)
+			node[pos=0.2, above, font=\scriptsize] {CAN 数据};
+			\draw[route] (eth.east) -| ([xshift=-8mm, yshift=-2mm]cpu.west) -- ([yshift=-2mm]cpu.west)
+			node[pos=0.2, below, font=\scriptsize] {以太网上下文};
+			
+			% 检测流
+			\draw[route] (cpu.east) -- (ids.west)
+			node[midway, above, font=\scriptsize] {特征提取};
+			
+			% 存储双向流：垂直并行，直接向上/下，绝不拐弯
+			% 写入 (偏移 +8mm)
+			\draw[route] ([xshift=8mm]cpu.south) -- ([xshift=8mm]ring.north)
+			node[midway, right, font=\scriptsize] {写入};
+			% 回读 (偏移 -8mm)，直接向上
+			\draw[route] ([xshift=-8mm]ring.north) -- ([xshift=-8mm]cpu.south)
+			node[midway, left, font=\scriptsize] {回读};
+			
+			% 告警反馈
+			\draw[route] (ids.south) |- (ring.east)
+			node[pos=0.7, right, font=\scriptsize] {告警元数据};
+			
+			% 时间同步
+			\draw[sync] (gptp.south) -- (cpu.north) node[midway, right, font=\scriptsize] {主时钟};
+			\coordinate (sync_pt) at (0, 3.2);
+			\draw[sync] (sync_pt) -| (can.north);
+			\draw[sync] (sync_pt) -| (eth.north);
+			\draw[sync] (sync_pt) -| (ids.north);
+			
+		\end{tikzpicture}
+	}
+	\caption{系统部署架构图}
+\end{figure}
+\end{document}

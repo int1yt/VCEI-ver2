@@ -1,0 +1,57 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{ctex}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\small,
+  >=Latex,
+  line cap=round,
+  line join=round,
+  blk/.style={
+    draw=#1!70!black,
+    fill=#1!10,
+    rounded corners=2.5mm,
+    very thick,
+    minimum width=35mm,
+    minimum height=12mm,
+    align=center
+  },
+  sig/.style={->, very thick, draw=black!75},
+  back/.style={draw=black!25, rounded corners=3mm, line width=0.8pt}
+]
+
+% Core in-vehicle components
+\node[blk=blue] (can) at (0,1.8) {CAN 总线\\CAN Frame Stream};
+\node[blk=teal] (eth) at (0,-1.8) {以太网监控\\Ethernet Traffic Monitor};
+\node[blk=purple] (cpu) at (5.8,0) {中央处理器\\Central Processor};
+\node[blk=orange] (ids) at (11.2,1.8) {CAN ClockIDS\\实时检测引擎};
+\node[blk=gray] (ring) at (11.2,-1.8) {环形存储\\Ring Buffer};
+\node[blk=green!70!black] (gptp) at (5.8,4.1) {gPTP 时间同步\\Global Time Base};
+
+% In-vehicle boundary
+\begin{scope}[on background layer]
+  \node[back, fill=white, fit=(can)(eth)(cpu)(ids)(ring)(gptp),
+        inner sep=9mm,
+        label={[yshift=2mm]\large\bfseries 车内部署架构}] {};
+\end{scope}
+
+% Main signals
+\draw[sig] (can.east) -- node[above, sloped, text=black!70]{CAN 时序与报文} (cpu.west);
+\draw[sig] (eth.east) -- node[below, sloped, text=black!70]{以太网会话与上下文} (cpu.west);
+\draw[sig] (cpu.east) -- node[above, sloped, text=black!70]{特征与检测任务} (ids.west);
+\draw[sig] (cpu.east) -- node[below, sloped, text=black!70]{事件写入} (ring.west);
+
+% Timing synchronization paths
+\draw[sig, dashed] (gptp.south) -- node[right, text=black!70]{统一时钟} (cpu.north);
+\draw[sig, dashed] (gptp.east) .. controls +(1.8,0.2) and +(-1.2,1.0) .. node[above, text=black!70]{时间对齐} (ids.north);
+\draw[sig, dashed] (gptp.east) .. controls +(2.0,-0.4) and +(-1.0,1.0) .. node[right, text=black!70]{时间戳一致性} (ring.north);
+
+% Feedback loop
+\draw[sig] (ids.south) -- ++(0,-0.7) -| node[pos=0.25,right,text=black!70]{告警元数据} (ring.east);
+\draw[sig] (ring.west) -- ++(-1.2,0) |- node[pos=0.3,left,text=black!70]{历史窗口回读} (cpu.south);
+
+\end{tikzpicture}
+\end{document}

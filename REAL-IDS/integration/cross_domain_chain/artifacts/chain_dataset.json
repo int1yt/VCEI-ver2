@@ -1,0 +1,19 @@
+{
+  "n": 20000,
+  "T": 10,
+  "fused_dim": 256,
+  "chain_names": [
+    "benign",
+    "eth_recon_only",
+    "can_attack_only",
+    "eth_then_can_chain"
+  ],
+  "stage_names": [
+    "normal",
+    "eth_reconnaissance",
+    "eth_anomaly",
+    "can_presurge",
+    "can_attack"
+  ],
+  "out": "artifacts\\chain_dataset.pt"
+}

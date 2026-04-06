@@ -1,0 +1,32 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\small,
+  >=Latex,
+  step/.style={draw=black!70, fill=blue!8, rounded corners=2mm, minimum width=34mm, minimum height=10mm, align=center},
+  dec/.style={draw=black!70, fill=orange!14, diamond, aspect=2.2, align=center, inner sep=1pt},
+  line/.style={->, very thick}
+]
+
+\node[step] (s1) at (0,0) {加载 train/val 数据};
+\node[step, below=10mm of s1] (s2) {前向+反向传播\\更新参数};
+\node[step, below=10mm of s2] (s3) {验证集评估\\val\_loss, val\_acc};
+\node[dec, below=12mm of s3] (d1) {val\_loss\\更小?};
+\node[step, below left=10mm and 14mm of d1] (s4) {保存\\best\_model.pth};
+\node[step, below right=10mm and 14mm of d1] (s5) {继续下一轮\\并调度 LR};
+\node[step, below=16mm of d1] (s6) {训练结束\\测试集评估并导出指标};
+
+\draw[line] (s1) -- (s2);
+\draw[line] (s2) -- (s3);
+\draw[line] (s3) -- (d1);
+\draw[line] (d1) -- node[left] {是} (s4);
+\draw[line] (d1) -- node[right] {否} (s5);
+\draw[line] (s4.south) |- (s6.west);
+\draw[line] (s5.south) |- (s6.east);
+
+\end{tikzpicture}
+\end{document}

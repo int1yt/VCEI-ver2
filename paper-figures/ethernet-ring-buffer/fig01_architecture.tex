@@ -1,0 +1,32 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\small,
+  >=Latex,
+  blk/.style={draw=#1!70!black, fill=#1!10, rounded corners=2.5mm, very thick, minimum width=34mm, minimum height=11mm, align=center},
+  sig/.style={->, very thick, draw=black!75},
+  box/.style={draw=black!25, rounded corners=3mm, line width=0.8pt}
+]
+
+\node[blk=blue] (can) at (0,1.6) {CAN ClockIDS\\时钟倾斜检测};
+\node[blk=teal] (ethin) at (0,-1.6) {以太网报文输入\\实时监听线程};
+\node[blk=purple] (cpu) at (5.6,0) {中央处理器\\事件融合与告警构建};
+\node[blk=orange] (ring) at (11.2,0) {以太网环形存储\\EthRingBuffer};
+\node[blk=green!70!black] (alert) at (16.8,0) {告警输出\\含以太网上下文};
+
+\begin{scope}[on background layer]
+  \node[box, fit=(can)(ethin)(cpu)(ring)(alert), inner sep=8mm, label={[yshift=2mm]\large\bfseries 车内检测链路中的以太网环形存储位置}] {};
+\end{scope}
+
+\draw[sig] (can.east) -- node[above, sloped] {CAN 异常事件} (cpu.west);
+\draw[sig] (ethin.east) -- node[below, sloped] {以太网报文流} (cpu.west);
+\draw[sig] (cpu.east) -- node[above] {写入/查询请求} (ring.west);
+\draw[sig] (ring.east) -- node[above] {时间窗上下文} (alert.west);
+\draw[sig, dashed] (cpu.north east) .. controls +(1.6,1.0) and +(-1.2,1.2) .. node[above] {触发检索} (ring.north);
+
+\end{tikzpicture}
+\end{document}
