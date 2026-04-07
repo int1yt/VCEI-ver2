@@ -1,0 +1,35 @@
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\small,
+  >=Latex,
+  blk/.style={draw=#1!72!black, fill=#1!8, rounded corners=2.2mm, very thick, minimum width=34mm, minimum height=11mm, align=center},
+  flow/.style={->, very thick, draw=black!75}
+]
+
+\node[blk=blue] (can2d) at (0,1.6) {CAN 2D 输入\\\(64\times8\) 滑窗};
+\node[blk=teal] (eth2d) at (0,-1.6) {Eth 2D 输入\\\(10\times80\) 序列};
+\node[blk=purple] (align) at (5.5,0) {CrossDomainAligner\\对比学习 + MMD};
+\node[blk=orange] (fuse) at (10.8,0) {融合时序\\\(\mathbf{Z}\in\mathbb{R}^{10\times d_f}\)};
+\node[blk=green!70!black] (gt) at (16.1,0) {GraphTransformerIDS\\链类型 + 阶段输出};
+
+\draw[flow] (can2d.east) -- (align.west);
+\draw[flow] (eth2d.east) -- (align.west);
+\draw[flow] (align.east) -- (fuse.west);
+\draw[flow] (fuse.east) -- (gt.west);
+
+\node[draw=black!35, fill=yellow!12, rounded corners=2mm, align=left, inner sep=4pt] at (10.8,-2.2) {
+核心思想：先做跨域语义对齐，再做时间链建模；\\
+输出同时包含链级结论与每时间步阶段分布。};
+
+\begin{scope}[on background layer]
+  \node[draw=black!25, rounded corners=3mm, line width=0.8pt,
+  fit=(can2d)(eth2d)(align)(fuse)(gt), inner sep=8mm,
+  label={[yshift=2mm]\large\bfseries CAN+以太网联合二维时序 ML 总览}] {};
+\end{scope}
+\end{tikzpicture}
+\end{document}

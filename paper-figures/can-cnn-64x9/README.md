@@ -1,32 +1,31 @@
-# CAN CNN 64x9（论文材料）
+# CAN-CNN(64x9) 图组（全新重绘版）
 
-本目录提供可直接用于论文写作与制图的材料，基于 `REAL-IDS/integration/can_cnn_64x9` 的实际实现整理。
+本目录已删除旧版 `fig01~fig07`，并重建为统一风格的 4 张主图：具体详细、简约美观、可直接用于论文主文。
 
-## 文件说明
+## 新图清单（重绘）
 
-- `paper_text_can_cnn_64x9.md`：可直接复制到论文中的方法描述（预处理、网络、训练、推理与复杂度）。
-- `fig01_pipeline.tex`：端到端流程图（数据到部署）。
-- `fig02_window_and_features.tex`：64x9 输入构造示意图。
-- `fig03_network_architecture.tex`：CNN 网络结构图。
-- `fig04_training_and_selection.tex`：训练与最优模型选择流程图。
-- `fig05_online_inference_integration.tex`：在线推理与系统集成图。
-- `fig06_complexity_profile.tex`：复杂度与实时性图。
-- `fig07_real_training_evidence_can_only.tex`：仅基于 CAN-CNN(64x9) 的真实训练证据图组。
-- `real-training-images/`：CAN 专用真实/衍生图片（训练曲线、混淆矩阵、类别指标、Grad-CAM 解释图）。
-- `generate_can_eval_images.py`：从 `eval_metrics.json` 生成混淆矩阵与类别指标图。
+- `fig01_method_overview_redraw.tex`  
+  方法总览：数据到部署的完整链路与关键约束（`dt_max_ms` 一致性）。
+- `fig02_feature_and_network_redraw.tex`  
+  输入与网络：64x9 特征定义 + 轻量 CNN 结构。
+- `fig03_training_evidence_redraw.tex`  
+  真实证据：训练曲线、混淆矩阵、类别指标、Grad-CAM（全部来自 `can_cnn_64x9`）。
+- `fig04_deployment_efficiency_redraw.tex`  
+  在线部署与效率：推理路径、工程约束、效率要点。
 
-## 编译
+## 其它文件
 
-在当前目录执行（每个图独立编译）：
+- `paper_text_can_cnn_64x9.md`：论文文字描述（详细版）。
+- `real-training-images/`：真实/衍生图片资源。
+- `generate_can_eval_images.py`：由 `eval_metrics.json` 生成评估图。
+
+## 编译命令
 
 ```bash
-latexmk -xelatex fig01_pipeline.tex
-latexmk -xelatex fig02_window_and_features.tex
-latexmk -xelatex fig03_network_architecture.tex
-latexmk -xelatex fig04_training_and_selection.tex
-latexmk -xelatex fig05_online_inference_integration.tex
-latexmk -xelatex fig06_complexity_profile.tex
-latexmk -xelatex fig07_real_training_evidence_can_only.tex
+latexmk -xelatex fig01_method_overview_redraw.tex
+latexmk -xelatex fig02_feature_and_network_redraw.tex
+latexmk -xelatex fig03_training_evidence_redraw.tex
+latexmk -xelatex fig04_deployment_efficiency_redraw.tex
 ```
 
-或使用 `xelatex` 分别编译。
+或分别使用 `xelatex` 编译。

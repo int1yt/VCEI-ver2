@@ -1,0 +1,39 @@
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\small,
+  >=Latex,
+  blk/.style={draw=#1!70!black, fill=#1!8, rounded corners=2.2mm, very thick, minimum width=34mm, minimum height=10mm, align=center},
+  flow/.style={->, very thick, draw=black!75},
+  badge/.style={draw=black!35, rounded corners=1.5mm, fill=yellow!14, inner sep=3pt}
+]
+
+\node[blk=blue] (daemon) at (0,0) {real\_ids\_daemon\\64 帧历史窗口};
+\node[blk=teal] (prep) at (4.8,0) {在线预处理\\64x9 + \(\Delta t\) 归一化};
+\node[blk=purple] (infer) at (9.6,0) {CAN-CNN 前向推理\\\texttt{best\_model.pth}};
+\node[blk=green!70!black] (fuse) at (14.4,0) {融合输出\\\texttt{can\_ml}};
+
+\draw[flow] (daemon) -- (prep);
+\draw[flow] (prep) -- (infer);
+\draw[flow] (infer) -- (fuse);
+
+\node[badge] at (4.8,-1.6) {\texttt{fixed preprocessing rule}};
+\node[badge] at (9.6,-1.6) {\texttt{lightweight inference}};
+\node[badge] at (14.4,-1.6) {\texttt{deployment ready}};
+
+\node[draw=black!35, fill=orange!10, rounded corners=2mm, align=left, inner sep=5pt] at (7.2,2.0) {
+\textbf{效率要点：}\\
+1) 主路径仅窗口构造 + 单次前向；\\
+2) 训练重计算离线完成；\\
+3) 运行期内存与时延可控。};
+
+\begin{scope}[on background layer]
+  \node[draw=black!25, rounded corners=3mm, line width=0.8pt, fit=(daemon)(prep)(infer)(fuse), inner sep=7mm,
+  label={[yshift=2mm]\large\bfseries 在线部署与效率（重绘版）}] {};
+\end{scope}
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,271 @@
+{
+  "carhack": [
+    {
+      "name": "DoS_dataset",
+      "file": "CarHackData\\DoS_dataset.csv",
+      "rows": 3665771,
+      "unique_ids": 27,
+      "timestamp_min": 1478198376.389427,
+      "timestamp_max": 1478201209.058944,
+      "dt_min_ms": 0.03504753112792969,
+      "dt_median_ms": 0.24509429931640625,
+      "dt_p95_ms": 5.307912826538086,
+      "dt_max_ms": 21.573781967163086,
+      "top_ids": [
+        [
+          "0000",
+          587521
+        ],
+        [
+          "0130",
+          168118
+        ],
+        [
+          "0002",
+          167556
+        ],
+        [
+          "0131",
+          167016
+        ],
+        [
+          "0140",
+          167002
+        ],
+        [
+          "018f",
+          166931
+        ],
+        [
+          "02c0",
+          166713
+        ],
+        [
+          "0370",
+          166681
+        ],
+        [
+          "0316",
+          166631
+        ],
+        [
+          "0153",
+          166573
+        ]
+      ],
+      "dlc_distribution": {
+        "2": 31188,
+        "8": 3634583
+      }
+    },
+    {
+      "name": "Fuzzy_dataset",
+      "file": "CarHackData\\Fuzzy_dataset.csv",
+      "rows": 3838860,
+      "unique_ids": 2048,
+      "timestamp_min": 1478195721.903877,
+      "timestamp_max": 1478201209.058944,
+      "dt_min_ms": 0.03409385681152344,
+      "dt_median_ms": 0.24390220642089844,
+      "dt_p95_ms": 4.953181743621818,
+      "dt_max_ms": 19.98114585876465,
+      "top_ids": [
+        [
+          "0316",
+          182121
+        ],
+        [
+          "0002",
+          180011
+        ],
+        [
+          "018f",
+          179802
+        ],
+        [
+          "02c0",
+          179637
+        ],
+        [
+          "043f",
+          179538
+        ],
+        [
+          "0350",
+          178687
+        ],
+        [
+          "0153",
+          178188
+        ],
+        [
+          "0130",
+          178149
+        ],
+        [
+          "0260",
+          178049
+        ],
+        [
+          "0370",
+          177691
+        ]
+      ],
+      "dlc_distribution": {
+        "2": 34382,
+        "5": 53451,
+        "6": 3,
+        "8": 3751024
+      }
+    },
+    {
+      "name": "gear_dataset",
+      "file": "CarHackData\\gear_dataset.csv",
+      "rows": 4443142,
+      "unique_ids": 26,
+      "timestamp_min": 1478193190.056566,
+      "timestamp_max": 1478201209.058944,
+      "dt_min_ms": 0.10800361633300781,
+      "dt_median_ms": 0.24318695068359375,
+      "dt_p95_ms": 2.187013626098633,
+      "dt_max_ms": 18.234968185424805,
+      "top_ids": [
+        [
+          "043f",
+          804541
+        ],
+        [
+          "0316",
+          211325
+        ],
+        [
+          "018f",
+          211237
+        ],
+        [
+          "0002",
+          209709
+        ],
+        [
+          "0260",
+          209586
+        ],
+        [
+          "0153",
+          209177
+        ],
+        [
+          "02a0",
+          208224
+        ],
+        [
+          "0370",
+          207859
+        ],
+        [
+          "02c0",
+          207695
+        ],
+        [
+          "0350",
+          207305
+        ]
+      ],
+      "dlc_distribution": {
+        "2": 40165,
+        "8": 4402977
+      }
+    },
+    {
+      "name": "RPM_dataset",
+      "file": "CarHackData\\RPM_dataset.csv",
+      "rows": 4621702,
+      "unique_ids": 26,
+      "timestamp_min": 1478191030.045114,
+      "timestamp_max": 1478201209.058944,
+      "dt_min_ms": 0.052928924560546875,
+      "dt_median_ms": 0.24318695068359375,
+      "dt_p95_ms": 1.9989132881164524,
+      "dt_max_ms": 14.136075973510742,
+      "top_ids": [
+        [
+          "0316",
+          871231
+        ],
+        [
+          "018f",
+          218180
+        ],
+        [
+          "0002",
+          216546
+        ],
+        [
+          "0260",
+          216523
+        ],
+        [
+          "0153",
+          216260
+        ],
+        [
+          "02c0",
+          214882
+        ],
+        [
+          "02a0",
+          214876
+        ],
+        [
+          "0370",
+          214354
+        ],
+        [
+          "043f",
+          214276
+        ],
+        [
+          "0130",
+          214157
+        ]
+      ],
+      "dlc_distribution": {
+        "2": 41476,
+        "8": 4580226
+      }
+    }
+  ],
+  "data_8000": [
+    {
+      "file": "IntrusionDetectNet-CNN-Transformer-main\\PycharmProjects\\data_8000_normal.csv",
+      "rows": 8000,
+      "label_distribution": {
+        "BENIGN": 8000
+      },
+      "protocol_distribution": {
+        "6": 6589,
+        "17": 1398,
+        "0": 13
+      },
+      "flow_duration_min": -1.0,
+      "flow_duration_median": 401534.5,
+      "flow_duration_p95": 116761961.4,
+      "flow_duration_max": 119999979.0
+    },
+    {
+      "file": "IntrusionDetectNet-CNN-Transformer-main\\PycharmProjects\\data_8000_abnormal.csv",
+      "rows": 8000,
+      "label_distribution": {
+        "DoS slowloris": 5796,
+        "DoS Slowhttptest": 2204
+      },
+      "protocol_distribution": {
+        "6": 8000
+      },
+      "flow_duration_min": 2.0,
+      "flow_duration_median": 63130391.0,
+      "flow_duration_p95": 109578302.44999999,
+      "flow_duration_max": 119799403.0
+    }
+  ]
+}

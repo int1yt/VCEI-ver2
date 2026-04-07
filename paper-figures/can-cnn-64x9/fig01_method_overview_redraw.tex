@@ -1,0 +1,33 @@
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\small,
+  >=Latex,
+  block/.style={draw=#1!70!black, fill=#1!8, rounded corners=2.5mm, very thick, minimum width=31mm, minimum height=11mm, align=center},
+  flow/.style={->, very thick, draw=black!75},
+  tip/.style={draw=black!35, fill=yellow!12, rounded corners=1.5mm, inner sep=3pt, align=center}
+]
+
+\node[block=blue] (raw) at (0,0) {原始 CAN 流\\CSV/TXT 报文序列};
+\node[block=teal] (win) at (4.2,0) {滑窗构造\\\(W=64,\ S=32\)};
+\node[block=teal] (feat) at (8.4,0) {特征编码\\8 字节 + \(\Delta t\)};
+\node[block=purple] (cnn) at (12.6,0) {CAN-CNN(64x9)\\4 类 logits};
+\node[block=green!70!black] (out) at (16.8,0) {部署输出\\class/confidence};
+
+\draw[flow] (raw) -- (win);
+\draw[flow] (win) -- (feat);
+\draw[flow] (feat) -- (cnn);
+\draw[flow] (cnn) -- (out);
+
+\node[tip] at (8.4,-1.8) {关键点：\(\Delta t\) 仅用训练集统计归一化，\\部署端复用同一 \texttt{dt\_max\_ms} 保证分布一致性。};
+
+\begin{scope}[on background layer]
+  \node[draw=black!25, rounded corners=3mm, line width=0.8pt, fit=(raw)(win)(feat)(cnn)(out), inner sep=7mm,
+  label={[yshift=2mm]\large\bfseries CAN-CNN(64x9) 方法总览（重绘版）}] {};
+\end{scope}
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,5 @@
+PWD C:/Users/Luyutong/Desktop/VCEI/paper-figures/can-cnn-64x9
+INPUT d:/texlive/texlive/2025/texmf.cnf
+INPUT d:/texlive/texlive/2025/texmf-dist/web2c/texmf.cnf
+INPUT d:/texlive/texlive/2025/texmf-var/web2c/xetex/xelatex.fmt
+INPUT fig03_training_evidence_redraw.tex

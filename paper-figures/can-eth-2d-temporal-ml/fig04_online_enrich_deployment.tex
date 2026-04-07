@@ -1,0 +1,37 @@
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{ctex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\small,
+  >=Latex,
+  blk/.style={draw=#1!72!black, fill=#1!8, rounded corners=2.2mm, very thick, minimum width=33mm, minimum height=10mm, align=center},
+  flow/.style={->, very thick, draw=black!75}
+]
+
+\node[blk=blue] (daemon) at (0,0) {real\_ids\_daemon\\\texttt{can\_history + ethernet\_context}};
+\node[blk=teal] (api) at (4.8,0) {\texttt{POST /v1/enrich}\\ml\_bridge};
+\node[blk=purple] (single) at (9.6,1.6) {单域 ML\\\texttt{ethernet\_ml, can\_ml}};
+\node[blk=orange] (chain) at (9.6,-1.6) {链式 ML\\\texttt{attack\_chain\_ml}};
+\node[blk=green!70!black] (out) at (14.8,0) {融合返回\\\texttt{fusion\_attack\_type + attack\_chain}};
+
+\draw[flow] (daemon.east) -- (api.west);
+\draw[flow] (api.east) -- (single.west);
+\draw[flow] (api.east) -- (chain.west);
+\draw[flow] (single.east) -- (out.west);
+\draw[flow] (chain.east) -- (out.west);
+
+\node[draw=black!35, fill=yellow!12, rounded corners=2mm, align=left, inner sep=4pt] at (7.4,-3.0) {
+部署要点：\\
+1) 单域模型保留，链式模型增量接入；\\
+2) 历史 CAN 帧越充足，10 步滑窗时间分辨率越高。};
+
+\begin{scope}[on background layer]
+  \node[draw=black!25, rounded corners=3mm, line width=0.8pt,
+  fit=(daemon)(api)(single)(chain)(out), inner sep=8mm,
+  label={[yshift=2mm]\large\bfseries 在线融合部署（/v1/enrich）}] {};
+\end{scope}
+\end{tikzpicture}
+\end{document}
