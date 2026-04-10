@@ -1,4 +1,697 @@
 {
-  "fileInfos" : [ ],
+  "fileInfos" : [ {
+    "path" : "IntrusionDetectNet-CNN-Transformer-main\\PycharmProjects\\data_preprocess.py",
+    "modificationInfo" : {
+      "contentHash" : 887437590,
+      "lastModified" : 1774404272000
+    },
+    "linesOfCode" : 82
+  }, {
+    "path" : "IntrusionDetectNet-CNN-Transformer-main\\PycharmProjects\\evaluate.py",
+    "modificationInfo" : {
+      "contentHash" : 1003478826,
+      "lastModified" : 1774871388000
+    },
+    "linesOfCode" : 188
+  }, {
+    "path" : "IntrusionDetectNet-CNN-Transformer-main\\PycharmProjects\\model.py",
+    "modificationInfo" : {
+      "contentHash" : 719448075,
+      "lastModified" : 1774404220000
+    },
+    "linesOfCode" : 59
+  }, {
+    "path" : "IntrusionDetectNet-CNN-Transformer-main\\PycharmProjects\\train.py",
+    "modificationInfo" : {
+      "contentHash" : -1575155401,
+      "lastModified" : 1775013220000
+    },
+    "linesOfCode" : 59
+  }, {
+    "path" : "REAL-IDS\\cpp\\daemon\\broadcast_hub.hpp",
+    "modificationInfo" : {
+      "contentHash" : 1515295040,
+      "lastModified" : 1775305759347
+    },
+    "linesOfCode" : 88
+  }, {
+    "path" : "REAL-IDS\\cpp\\daemon\\main.cpp",
+    "modificationInfo" : {
+      "contentHash" : 1227199659,
+      "lastModified" : 1775454120944
+    },
+    "linesOfCode" : 429
+  }, {
+    "path" : "REAL-IDS\\cpp\\include\\real_ids\\can_ids.hpp",
+    "modificationInfo" : {
+      "contentHash" : 774420787,
+      "lastModified" : 1775307374461
+    },
+    "linesOfCode" : 32
+  }, {
+    "path" : "REAL-IDS\\cpp\\include\\real_ids\\central_processor.hpp",
+    "modificationInfo" : {
+      "contentHash" : -2041424901,
+      "lastModified" : 1775305638205
+    },
+    "linesOfCode" : 24
+  }, {
+    "path" : "REAL-IDS\\cpp\\include\\real_ids\\engine.hpp",
+    "modificationInfo" : {
+      "contentHash" : 2086493242,
+      "lastModified" : 1775307374460
+    },
+    "linesOfCode" : 76
+  }, {
+    "path" : "REAL-IDS\\cpp\\include\\real_ids\\eth_buffer.hpp",
+    "modificationInfo" : {
+      "contentHash" : -387385857,
+      "lastModified" : 1775307374460
+    },
+    "linesOfCode" : 28
+  }, {
+    "path" : "REAL-IDS\\cpp\\include\\real_ids\\ingress.hpp",
+    "modificationInfo" : {
+      "contentHash" : -1377832194,
+      "lastModified" : 1775307374461
+    },
+    "linesOfCode" : 22
+  }, {
+    "path" : "REAL-IDS\\cpp\\include\\real_ids\\time_source.hpp",
+    "modificationInfo" : {
+      "contentHash" : 1453345383,
+      "lastModified" : 1775307374474
+    },
+    "linesOfCode" : 23
+  }, {
+    "path" : "REAL-IDS\\cpp\\include\\real_ids\\types.hpp",
+    "modificationInfo" : {
+      "contentHash" : -45514017,
+      "lastModified" : 1775305598940
+    },
+    "linesOfCode" : 35
+  }, {
+    "path" : "REAL-IDS\\cpp\\src\\can_ids.cpp",
+    "modificationInfo" : {
+      "contentHash" : -189796705,
+      "lastModified" : 1775307374460
+    },
+    "linesOfCode" : 39
+  }, {
+    "path" : "REAL-IDS\\cpp\\src\\central_processor.cpp",
+    "modificationInfo" : {
+      "contentHash" : -2015787731,
+      "lastModified" : 1775305645699
+    },
+    "linesOfCode" : 52
+  }, {
+    "path" : "REAL-IDS\\cpp\\src\\engine.cpp",
+    "modificationInfo" : {
+      "contentHash" : 1747949366,
+      "lastModified" : 1775307374474
+    },
+    "linesOfCode" : 90
+  }, {
+    "path" : "REAL-IDS\\cpp\\src\\eth_buffer.cpp",
+    "modificationInfo" : {
+      "contentHash" : 1612571934,
+      "lastModified" : 1775307374460
+    },
+    "linesOfCode" : 35
+  }, {
+    "path" : "REAL-IDS\\cpp\\third_party\\httplib.h",
+    "modificationInfo" : {
+      "contentHash" : 50532938,
+      "lastModified" : 1775305669839
+    },
+    "linesOfCode" : 9441
+  }, {
+    "path" : "REAL-IDS\\cpp\\third_party\\nlohmann\\json.hpp",
+    "modificationInfo" : {
+      "contentHash" : -36481273,
+      "lastModified" : 1775305704926
+    },
+    "linesOfCode" : 24765
+  }, {
+    "path" : "REAL-IDS\\integration\\can_cnn_64x9\\draw.py",
+    "modificationInfo" : {
+      "contentHash" : -1825490610,
+      "lastModified" : 1775742478788
+    },
+    "linesOfCode" : 79
+  }, {
+    "path" : "REAL-IDS\\integration\\can_cnn_64x9\\explain.py",
+    "modificationInfo" : {
+      "contentHash" : -213256813,
+      "lastModified" : 1775413101420
+    },
+    "linesOfCode" : 137
+  }, {
+    "path" : "REAL-IDS\\integration\\can_cnn_64x9\\model.py",
+    "modificationInfo" : {
+      "contentHash" : -1966874434,
+      "lastModified" : 1775412340844
+    },
+    "linesOfCode" : 53
+  }, {
+    "path" : "REAL-IDS\\integration\\can_cnn_64x9\\preprocess.py",
+    "modificationInfo" : {
+      "contentHash" : -1155249919,
+      "lastModified" : 1775412370961
+    },
+    "linesOfCode" : 199
+  }, {
+    "path" : "REAL-IDS\\integration\\can_cnn_64x9\\train.py",
+    "modificationInfo" : {
+      "contentHash" : 526391453,
+      "lastModified" : 1775413048625
+    },
+    "linesOfCode" : 222
+  }, {
+    "path" : "REAL-IDS\\integration\\cross_domain_chain\\GraphTransformerIDS.py",
+    "modificationInfo" : {
+      "contentHash" : -604401801,
+      "lastModified" : 1775453572220
+    },
+    "linesOfCode" : 95
+  }, {
+    "path" : "REAL-IDS\\integration\\cross_domain_chain\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : -352173184,
+      "lastModified" : 1775453873060
+    },
+    "linesOfCode" : 1
+  }, {
+    "path" : "REAL-IDS\\integration\\cross_domain_chain\\aligner.py",
+    "modificationInfo" : {
+      "contentHash" : -569195221,
+      "lastModified" : 1775453566685
+    },
+    "linesOfCode" : 178
+  }, {
+    "path" : "REAL-IDS\\integration\\cross_domain_chain\\chain_generator.py",
+    "modificationInfo" : {
+      "contentHash" : -717299457,
+      "lastModified" : 1775453706768
+    },
+    "linesOfCode" : 267
+  }, {
+    "path" : "REAL-IDS\\integration\\cross_domain_chain\\synthetic_eth.py",
+    "modificationInfo" : {
+      "contentHash" : -401934227,
+      "lastModified" : 1775453647717
+    },
+    "linesOfCode" : 26
+  }, {
+    "path" : "REAL-IDS\\integration\\cross_domain_chain\\train_aligner.py",
+    "modificationInfo" : {
+      "contentHash" : -1889716134,
+      "lastModified" : 1775453696984
+    },
+    "linesOfCode" : 206
+  }, {
+    "path" : "REAL-IDS\\integration\\cross_domain_chain\\train_chain.py",
+    "modificationInfo" : {
+      "contentHash" : 1882956515,
+      "lastModified" : 1775453638310
+    },
+    "linesOfCode" : 185
+  }, {
+    "path" : "REAL-IDS\\integration\\ml_bridge\\can_cnn64_infer.py",
+    "modificationInfo" : {
+      "contentHash" : 1357849023,
+      "lastModified" : 1775413119594
+    },
+    "linesOfCode" : 90
+  }, {
+    "path" : "REAL-IDS\\integration\\ml_bridge\\can_supcon_infer.py",
+    "modificationInfo" : {
+      "contentHash" : -1526726170,
+      "lastModified" : 1775310541433
+    },
+    "linesOfCode" : 72
+  }, {
+    "path" : "REAL-IDS\\integration\\ml_bridge\\carhack_infer.py",
+    "modificationInfo" : {
+      "contentHash" : -2103205582,
+      "lastModified" : 1775313885248
+    },
+    "linesOfCode" : 61
+  }, {
+    "path" : "REAL-IDS\\integration\\ml_bridge\\carhack_io.py",
+    "modificationInfo" : {
+      "contentHash" : -1041340725,
+      "lastModified" : 1775313843416
+    },
+    "linesOfCode" : 89
+  }, {
+    "path" : "REAL-IDS\\integration\\ml_bridge\\carhack_model.py",
+    "modificationInfo" : {
+      "contentHash" : -1006039340,
+      "lastModified" : 1775313846409
+    },
+    "linesOfCode" : 29
+  }, {
+    "path" : "REAL-IDS\\integration\\ml_bridge\\chain_builder.py",
+    "modificationInfo" : {
+      "contentHash" : -1899185066,
+      "lastModified" : 1775454129790
+    },
+    "linesOfCode" : 112
+  }, {
+    "path" : "REAL-IDS\\integration\\ml_bridge\\chain_infer.py",
+    "modificationInfo" : {
+      "contentHash" : 1834310459,
+      "lastModified" : 1775454161891
+    },
+    "linesOfCode" : 203
+  }, {
+    "path" : "REAL-IDS\\integration\\ml_bridge\\eth_intrusion_net.py",
+    "modificationInfo" : {
+      "contentHash" : 550925875,
+      "lastModified" : 1775310332832
+    },
+    "linesOfCode" : 58
+  }, {
+    "path" : "REAL-IDS\\integration\\ml_bridge\\features.py",
+    "modificationInfo" : {
+      "contentHash" : 1092447149,
+      "lastModified" : 1775412454723
+    },
+    "linesOfCode" : 121
+  }, {
+    "path" : "REAL-IDS\\integration\\ml_bridge\\server.py",
+    "modificationInfo" : {
+      "contentHash" : -2035956419,
+      "lastModified" : 1775454163107
+    },
+    "linesOfCode" : 377
+  }, {
+    "path" : "REAL-IDS\\integration\\ml_bridge\\train_carhack.py",
+    "modificationInfo" : {
+      "contentHash" : 387520977,
+      "lastModified" : 1775313948520
+    },
+    "linesOfCode" : 137
+  }, {
+    "path" : "REAL-IDS\\tests\\integration\\clock_skew_ref.py",
+    "modificationInfo" : {
+      "contentHash" : 1864588446,
+      "lastModified" : 1775315986402
+    },
+    "linesOfCode" : 99
+  }, {
+    "path" : "REAL-IDS\\tests\\integration\\metrics_ml.py",
+    "modificationInfo" : {
+      "contentHash" : 2090345524,
+      "lastModified" : 1775316004788
+    },
+    "linesOfCode" : 133
+  }, {
+    "path" : "REAL-IDS\\tests\\integration\\reporting.py",
+    "modificationInfo" : {
+      "contentHash" : 1956327085,
+      "lastModified" : 1775316028771
+    },
+    "linesOfCode" : 159
+  }, {
+    "path" : "REAL-IDS\\tests\\integration\\run_tests.py",
+    "modificationInfo" : {
+      "contentHash" : -1076910081,
+      "lastModified" : 1775316048924
+    },
+    "linesOfCode" : 525
+  }, {
+    "path" : "REAL-IDS\\web-dashboard\\src\\App.tsx",
+    "modificationInfo" : {
+      "contentHash" : -1716479784,
+      "lastModified" : 1775454257038
+    },
+    "linesOfCode" : 522
+  }, {
+    "path" : "REAL-IDS\\web-dashboard\\src\\main.tsx",
+    "modificationInfo" : {
+      "contentHash" : -1835730768,
+      "lastModified" : 1775310735991
+    },
+    "linesOfCode" : 10
+  }, {
+    "path" : "REAL-IDS\\web-dashboard\\src\\vite-env.d.ts",
+    "modificationInfo" : {
+      "contentHash" : 1573231207,
+      "lastModified" : 1775310747201
+    },
+    "linesOfCode" : 9
+  }, {
+    "path" : "REAL-IDS\\web-dashboard\\vite.config.ts",
+    "modificationInfo" : {
+      "contentHash" : 1022949958,
+      "lastModified" : 1775310731543
+    },
+    "linesOfCode" : 10
+  }, {
+    "path" : "autoids_-can-&-ethernet-intrusion-detection-system\\server.ts",
+    "modificationInfo" : {
+      "contentHash" : -134646159,
+      "lastModified" : 1775304711372
+    },
+    "linesOfCode" : 200
+  }, {
+    "path" : "autoids_-can-&-ethernet-intrusion-detection-system\\src\\App.tsx",
+    "modificationInfo" : {
+      "contentHash" : -1276917647,
+      "lastModified" : 1775304711146
+    },
+    "linesOfCode" : 412
+  }, {
+    "path" : "autoids_-can-&-ethernet-intrusion-detection-system\\src\\embedded\\can_ids.hpp",
+    "modificationInfo" : {
+      "contentHash" : 420952874,
+      "lastModified" : 1775304711198
+    },
+    "linesOfCode" : 55
+  }, {
+    "path" : "autoids_-can-&-ethernet-intrusion-detection-system\\src\\embedded\\central_processor.hpp",
+    "modificationInfo" : {
+      "contentHash" : -129509639,
+      "lastModified" : 1775304711211
+    },
+    "linesOfCode" : 65
+  }, {
+    "path" : "autoids_-can-&-ethernet-intrusion-detection-system\\src\\embedded\\eth_buffer.hpp",
+    "modificationInfo" : {
+      "contentHash" : -2125694759,
+      "lastModified" : 1775304711184
+    },
+    "linesOfCode" : 54
+  }, {
+    "path" : "autoids_-can-&-ethernet-intrusion-detection-system\\src\\embedded\\gptp.hpp",
+    "modificationInfo" : {
+      "contentHash" : -1094730111,
+      "lastModified" : 1775304711165
+    },
+    "linesOfCode" : 13
+  }, {
+    "path" : "autoids_-can-&-ethernet-intrusion-detection-system\\src\\main.tsx",
+    "modificationInfo" : {
+      "contentHash" : -12746444,
+      "lastModified" : 1775304711113
+    },
+    "linesOfCode" : 10
+  }, {
+    "path" : "autoids_-can-&-ethernet-intrusion-detection-system\\src\\simulation\\can_ids.ts",
+    "modificationInfo" : {
+      "contentHash" : -359329244,
+      "lastModified" : 1775304711268
+    },
+    "linesOfCode" : 33
+  }, {
+    "path" : "autoids_-can-&-ethernet-intrusion-detection-system\\src\\simulation\\central_processor.ts",
+    "modificationInfo" : {
+      "contentHash" : 1357833863,
+      "lastModified" : 1775304711280
+    },
+    "linesOfCode" : 50
+  }, {
+    "path" : "autoids_-can-&-ethernet-intrusion-detection-system\\src\\simulation\\eth_buffer.ts",
+    "modificationInfo" : {
+      "contentHash" : -521963528,
+      "lastModified" : 1775304711256
+    },
+    "linesOfCode" : 40
+  }, {
+    "path" : "autoids_-can-&-ethernet-intrusion-detection-system\\src\\simulation\\gptp.ts",
+    "modificationInfo" : {
+      "contentHash" : 356262599,
+      "lastModified" : 1775304711246
+    },
+    "linesOfCode" : 3
+  }, {
+    "path" : "autoids_-can-&-ethernet-intrusion-detection-system\\src\\simulation\\types.ts",
+    "modificationInfo" : {
+      "contentHash" : 1315931577,
+      "lastModified" : 1775304711231
+    },
+    "linesOfCode" : 25
+  }, {
+    "path" : "autoids_-can-&-ethernet-intrusion-detection-system\\vite.config.ts",
+    "modificationInfo" : {
+      "contentHash" : 890002214,
+      "lastModified" : 1775304711349
+    },
+    "linesOfCode" : 24
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 0,
+      "lastModified" : 1775309860060
+    },
+    "linesOfCode" : 0
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\admin.py",
+    "modificationInfo" : {
+      "contentHash" : -1465783267,
+      "lastModified" : 1775309860071
+    },
+    "linesOfCode" : 3
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\apps.py",
+    "modificationInfo" : {
+      "contentHash" : -1478684160,
+      "lastModified" : 1775309860090
+    },
+    "linesOfCode" : 6
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\migrations\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 0,
+      "lastModified" : 1775309860335
+    },
+    "linesOfCode" : 0
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\models.py",
+    "modificationInfo" : {
+      "contentHash" : 207860348,
+      "lastModified" : 1775309860106
+    },
+    "linesOfCode" : 3
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 0,
+      "lastModified" : 1775309860388
+    },
+    "linesOfCode" : 0
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\dataset.py",
+    "modificationInfo" : {
+      "contentHash" : -2091268894,
+      "lastModified" : 1775309860397
+    },
+    "linesOfCode" : 46
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\networks\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 0,
+      "lastModified" : 1775309860603
+    },
+    "linesOfCode" : 0
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\networks\\classifier.py",
+    "modificationInfo" : {
+      "contentHash" : 604095858,
+      "lastModified" : 1775309860621
+    },
+    "linesOfCode" : 16
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\networks\\inception.py",
+    "modificationInfo" : {
+      "contentHash" : 2068367258,
+      "lastModified" : 1775309860632
+    },
+    "linesOfCode" : 152
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\networks\\resnet_big.py",
+    "modificationInfo" : {
+      "contentHash" : -1548116614,
+      "lastModified" : 1775309860646
+    },
+    "linesOfCode" : 209
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\networks\\simple_cnn.py",
+    "modificationInfo" : {
+      "contentHash" : -2056992966,
+      "lastModified" : 1775309860657
+    },
+    "linesOfCode" : 56
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\networks\\transfer.py",
+    "modificationInfo" : {
+      "contentHash" : -741677023,
+      "lastModified" : 1775309860668
+    },
+    "linesOfCode" : 17
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\preprocessing.py",
+    "modificationInfo" : {
+      "contentHash" : 1068172925,
+      "lastModified" : 1775309860419
+    },
+    "linesOfCode" : 133
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\preprocessing_survival.py",
+    "modificationInfo" : {
+      "contentHash" : -980443993,
+      "lastModified" : 1775309860430
+    },
+    "linesOfCode" : 139
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\supcon\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 0,
+      "lastModified" : 1775309861270
+    },
+    "linesOfCode" : 0
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\supcon\\losses.py",
+    "modificationInfo" : {
+      "contentHash" : 737566787,
+      "lastModified" : 1775309861280
+    },
+    "linesOfCode" : 102
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\supcon\\util.py",
+    "modificationInfo" : {
+      "contentHash" : -426844438,
+      "lastModified" : 1775309861291
+    },
+    "linesOfCode" : 96
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\test_model.py",
+    "modificationInfo" : {
+      "contentHash" : 2114260855,
+      "lastModified" : 1775309860439
+    },
+    "linesOfCode" : 102
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\train_baseline.py",
+    "modificationInfo" : {
+      "contentHash" : -485716603,
+      "lastModified" : 1775309860450
+    },
+    "linesOfCode" : 234
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\train_supcon.py",
+    "modificationInfo" : {
+      "contentHash" : 329019744,
+      "lastModified" : 1775309860459
+    },
+    "linesOfCode" : 348
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\train_test_split.py",
+    "modificationInfo" : {
+      "contentHash" : -290837161,
+      "lastModified" : 1775309860469
+    },
+    "linesOfCode" : 129
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\transfer.py",
+    "modificationInfo" : {
+      "contentHash" : 1946203001,
+      "lastModified" : 1775309860479
+    },
+    "linesOfCode" : 341
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\supervised-main\\utils.py",
+    "modificationInfo" : {
+      "contentHash" : -1740301079,
+      "lastModified" : 1775309860489
+    },
+    "linesOfCode" : 107
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\tests.py",
+    "modificationInfo" : {
+      "contentHash" : -854648675,
+      "lastModified" : 1775309860121
+    },
+    "linesOfCode" : 3
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\unsupervised-main\\Multi-Tiered-Hybrid-IDS-for-Internet-of-Vehicles-main\\FCBF_module.py",
+    "modificationInfo" : {
+      "contentHash" : 1059026620,
+      "lastModified" : 1775309861333
+    },
+    "linesOfCode" : 351
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\urls.py",
+    "modificationInfo" : {
+      "contentHash" : 1217125495,
+      "lastModified" : 1775309860135
+    },
+    "linesOfCode" : 6
+  }, {
+    "path" : "backend-main\\backend-main\\ids\\views.py",
+    "modificationInfo" : {
+      "contentHash" : -1211934322,
+      "lastModified" : 1775309860161
+    },
+    "linesOfCode" : 83
+  }, {
+    "path" : "backend-main\\backend-main\\manage.py",
+    "modificationInfo" : {
+      "contentHash" : 1706868679,
+      "lastModified" : 1775309859943
+    },
+    "linesOfCode" : 22
+  }, {
+    "path" : "backend-main\\backend-main\\mysit\\__init__.py",
+    "modificationInfo" : {
+      "contentHash" : 0,
+      "lastModified" : 1775309861392
+    },
+    "linesOfCode" : 0
+  }, {
+    "path" : "backend-main\\backend-main\\mysit\\asgi.py",
+    "modificationInfo" : {
+      "contentHash" : 1769523619,
+      "lastModified" : 1775309861401
+    },
+    "linesOfCode" : 16
+  }, {
+    "path" : "backend-main\\backend-main\\mysit\\settings.py",
+    "modificationInfo" : {
+      "contentHash" : -388024171,
+      "lastModified" : 1775309861412
+    },
+    "linesOfCode" : 134
+  }, {
+    "path" : "backend-main\\backend-main\\mysit\\urls.py",
+    "modificationInfo" : {
+      "contentHash" : 656550094,
+      "lastModified" : 1775309861423
+    },
+    "linesOfCode" : 23
+  }, {
+    "path" : "backend-main\\backend-main\\mysit\\wsgi.py",
+    "modificationInfo" : {
+      "contentHash" : -527810461,
+      "lastModified" : 1775309861433
+    },
+    "linesOfCode" : 16
+  }, {
+    "path" : "paper-figures\\can-cnn-64x9\\generate_can_eval_images.py",
+    "modificationInfo" : {
+      "contentHash" : 649021387,
+      "lastModified" : 1775479194230
+    },
+    "linesOfCode" : 71
+  }, {
+    "path" : "paper-figures\\dataset-analysis\\analyze_datasets.py",
+    "modificationInfo" : {
+      "contentHash" : -844913359,
+      "lastModified" : 1775492505381
+    },
+    "linesOfCode" : 379
+  } ],
   "appVersion" : "1.3.0"
 }

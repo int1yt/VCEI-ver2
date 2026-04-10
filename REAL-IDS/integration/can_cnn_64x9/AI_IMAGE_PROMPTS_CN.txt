@@ -1,0 +1,70 @@
+[CAN-CNN(64x9) 方法总结与绘图提示词包]
+
+一、30秒方法总览（给其他AI先读）
+我们的方法将连续64条CAN报文切成一个窗口，并编码为64x9张量：前8列是每条报文的8字节payload(归一化到0~1)，第9列是相邻报文时间间隔Δt(ms)按训练集dt_max_ms归一化后的值。然后输入轻量3层CNN（Conv-BN-ReLU-MaxPool x3 + AdaptiveAvgPool + Dropout + FC）进行4分类（Normal/DoS/Fuzzy/Spoofing）。
+系统在线部署时，daemon提供至少64条can_history，ml_bridge按同一个dt_max_ms做实时特征构造并推理，输出类别与置信度用于告警融合。
+
+二、创新性（建议在图中重点突出）
+1) 内容-时序联合编码创新：把payload字节与Δt放入同一个2D特征平面(64x9)，让模型同时学内容扰动+节律异常。
+2) 训练-部署一致性创新：仅用训练集估计dt_max_ms，并在部署端复用，减少分布漂移。
+3) 工程可落地创新：轻量CNN结构，计算量低，适配车端/边缘近实时。
+4) 系统集成创新：在REAL-IDS中作为可学习语义判别器，与规则检测互补，不替代规则而是增强分型能力。
+
+三、关键结构参数（作图标注建议）
+- 输入：1x64x9（单通道）
+- 窗口参数：window=64, stride=32
+- 网络：
+  Conv(1->32,3x3,pad1)+BN+ReLU+MaxPool(2)
+  Conv(32->64,3x3,pad1)+BN+ReLU+MaxPool(2)
+  Conv(64->128,3x3,pad1)+BN+ReLU+MaxPool(2)
+  AdaptiveAvgPool(2x2) -> Dropout(0.5) -> FC(512->4)
+- 损失：CrossEntropy
+- 优化：Adam(lr=1e-3)+ReduceLROnPlateau(factor=0.5,patience=3)
+
+四、结果摘要（可放图角标）
+- Test Accuracy: 89.53%
+- Macro Precision/Recall/F1: 90.27% / 89.29% / 89.76%
+- 类别表现：Normal接近完美；DoS与Fuzzy存在混淆；Spoofing精度与召回较高。
+
+五、给图像生成AI的高质量制图Prompt（可直接复制）
+
+【Prompt A：方法总览架构图（主图）】
+请生成一张科研论文风格的信息图（16:9，白底，蓝紫科技配色，极简高端风），主题是CAN-CNN(64x9) for In-Vehicle IDS。
+画面从左到右分4层：
+(1) Data Layer：CAN packet stream（timestamp, CAN ID, Data0..Data7）
+(2) Feature Layer：sliding window (W=64,S=32) -> tensor 64x9，其中8列payload bytes + 1列Δt(ms)
+(3) Model Layer：3-stage lightweight CNN (Conv-BN-ReLU-MaxPool)x3 + AdaptiveAvgPool + Dropout + FC -> 4-class logits
+(4) Deployment Layer：REAL-IDS pipeline（daemon can_history>=64 -> ml_bridge inference -> risk fusion/dashboard）
+请在图中高亮3个创新标签：
+- Content-Time Joint Encoding
+- Train-Deploy Consistency via dt_max_ms
+- Lightweight Edge-Ready Inference
+使用清晰箭头、模块边框、统一图标（数据/模型/部署），添加少量数学标注：X in R^(64x9), dt_norm=clip(dt/dt_max_ms,0,1)。
+风格要求：可直接用于IEEE论文图，矢量感，字体清晰，无冗余装饰。
+
+【Prompt B：输入特征与卷积感受野解释图】
+请生成一张64x9特征设计解释图，左侧是64x9热力矩阵示意：横轴0..7为payload bytes，第8列为Δt；纵轴是时间顺序64条报文。
+中间展示卷积核在矩阵上滑动，强调模型同时关注字节变化模式和时间节律突变。
+右侧展示三层CNN逐步抽象特征的过程（local pattern -> temporal-texture -> attack semantics）。
+请加一句图注：模型决策来自内容-时序联合模式，而非单一字节启发式。
+科研信息可视化风格，颜色克制，突出可解释性。
+
+【Prompt C：创新性对比图（我们方法 vs 传统方法）】
+生成一张三列对比图：
+左列Payload-only methods：只看字节，不看时间关系；
+中列Timing-only methods：只看周期/时钟，不看payload语义；
+右列Our CAN-CNN(64x9)：联合建模payload+Δt，在线可部署，分类更细。
+请用对勾/叉号矩阵对比能力：content awareness, temporal awareness, train-deploy consistency, edge efficiency, multi-class discrimination。
+右列用高亮边框突出best trade-off。
+风格：论文中的方法对比主图，简洁有说服力。
+
+【Prompt D：实验结果与可解释性组合图】
+生成一张四宫格图：
+(1) training/validation loss曲线
+(2) val accuracy曲线
+(3) confusion matrix（Normal/DoS/Fuzzy/Spoofing）
+(4) Grad-CAM叠加在64x9输入上的示意图（颜色越暖贡献越高）
+请在图注中说明：DoS与Fuzzy存在可见混淆区域，Normal和Spoofing可分性较高；Grad-CAM显示模型关注跨多时间行的带状区域，证明其使用了内容-时序联合证据。
+
+六、给别的AI的一段统一口径摘要（可直接粘贴）
+我们提出CAN-CNN(64x9)车载入侵检测方法：将连续64条CAN报文编码为64x9二维特征（8字节payload + 1维归一化Δt），并用轻量三层CNN进行四分类（Normal/DoS/Fuzzy/Spoofing）。该方法的核心创新是内容-时序联合建模，并通过训练期统计量dt_max_ms在部署端复用保证特征一致性，降低分布漂移。模型已无缝接入REAL-IDS链路（daemon -> ml_bridge -> fusion/dashboard），兼顾准确性与边缘实时性。实验结果显示测试准确率约89.53%，宏平均F1约89.76%，其中Normal/Spoofing区分度高，DoS与Fuzzy仍存在一定混淆。Grad-CAM可解释结果表明模型决策依赖跨时间与跨特征列的联合高响应区域，而非单一字节启发式。
